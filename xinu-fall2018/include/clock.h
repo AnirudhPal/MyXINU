@@ -13,3 +13,9 @@ extern	uint32	clktime;	/* current time in secs since boot	*/
 
 extern	qid16	sleepq;		/* queue for sleeping processes		*/
 extern	uint32	preempt;	/* preemption counter			*/
+
+/* Lab 1: XMinSec Struct */
+typedef struct xminsec {
+	int upmin;
+	int upsec;
+} xminsec_t; 

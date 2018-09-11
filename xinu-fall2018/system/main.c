@@ -7,7 +7,7 @@ process	main(void) {
 	welcome();
 
 	/* Lab 1: Test Code */
-	sleep(123);
+	sleep(5);
 	xminsec_t obj;
 	xuptime(&obj);
 
@@ -15,6 +15,10 @@ process	main(void) {
 	kprintf("MIN: %d\n", obj.upmin);
 	kprintf("SEC: %d\n", obj.upsec);
 
+	kprintf("\nrevbyteorder_asm(0x12ABCDEF) = 0x%08X\n", revbyteorder_asm(313249263));
+	kprintf("\nrevbyteorder_inline(0x12ABCDEF) = 0x%08X\n", revbyteorder_inline(313249263));
+	kprintf("\nrevbyteorder(0x12ABCDEF) = 0x%08X\n", revbyteorder(313249263));
+	kprintf("\nrevbyteorder_gcc(0x12ABCDEF) = 0x%08X\n", revbyteorder_gcc(313249263));
 
 	/* Run the Xinu shell */
 	recvclr();

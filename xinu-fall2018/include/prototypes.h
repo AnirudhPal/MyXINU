@@ -619,6 +619,21 @@ extern	void welcome(void);
 /* in file xuptime.c */
 extern	syscall xuptime(xminsec_t *);
 
+/* in file getppid.c */
+extern	syscall getppid(void);
+
+/* in file revbyteorder_asm.S */
+extern	long	revbyteorder_asm(long);
+
+/* in file revbyteorder_inline.c */
+extern	long	revbyteorder_inline(long);
+
+/* in file revbyteorder.c */
+extern	long	revbyteorder(long);
+
+/* in file revbyteorder_gcc.s */
+extern	long	revbyteorder_gcc(long);
+
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))
 #define	htonl(x)  ((((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \

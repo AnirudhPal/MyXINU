@@ -639,6 +639,9 @@ extern	void	printsegaddress(void);
 extern	void	print6preceding(char*);
 extern	void	print6following(char*);
 
+/* in file myprogA.c */
+extern	int	myprogA(void);
+extern 	char	myfuncA(int);
 
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))

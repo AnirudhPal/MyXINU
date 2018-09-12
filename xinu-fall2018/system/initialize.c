@@ -92,9 +92,13 @@ void	nulluser()
 	/*  something to run when no other process is ready to execute)	*/
 
 	while (TRUE) {
-		;		/* Do nothing */
-	}
+		/* Alternate Mechanism */
+		/*
+		__asm__("hlt;");
+		*/		
 
+		;/* Do nothing */
+	}
 }
 
 

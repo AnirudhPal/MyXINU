@@ -10,15 +10,18 @@ syscall xuptime(xminsec_t * p) {
 		return SYSERR;
 	}
 
-	// Assign Secs
-	p->upsec = clktime;
+	// Get CLKTIME
+	uint32 secs = clktime;
 
 	// Assign Mins
-	uint32 secs = clktime;
+	p->upmin = 0;
 	while(secs >= 60) {
 		secs -= 60;
 		p->upmin += 1;
 	}
+
+	// Assign Secs
+	p->upsec = secs;
 
 	// Return True
 	restore(mask);

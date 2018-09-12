@@ -634,6 +634,12 @@ extern	long	revbyteorder(long);
 /* in file revbyteorder_gcc.s */
 extern	long	revbyteorder_gcc(long);
 
+/* in file printsegaddress.c */
+extern	void	printsegaddress(void);
+extern	void	print6preceding(char*);
+extern	void	print6following(char*);
+
+
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))
 #define	htonl(x)  ((((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \

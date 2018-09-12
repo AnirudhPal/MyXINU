@@ -1,0 +1,8 @@
+#include <xinu.h>
+
+void printsegaddress() {
+	// Print Ends
+	kprintf("\nEnd of Text at 0x%08X.\n", (uint32)&etext - 1);
+	kprintf("End of Data at 0x%08X.\n", (uint32)&edata - 1);
+	kprintf("End of BSS at 0x%08X.\n", (uint32)&ebss - 1);
+}

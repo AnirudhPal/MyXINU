@@ -7,6 +7,7 @@ process	main(void) {
 	welcome();
 
 	/* Lab 1: Test Code */
+	/**
 	// Test Code for 4.1
 	int x = 1;
 	kprintf("\nGoing to sleep for %d to test xuptime().\n", x);
@@ -45,17 +46,23 @@ process	main(void) {
 	kprintf("\nComparision of Run Time Stack.\n");
 	resume(create(myprogA, 1024, 21, "myprogA", 0));
 	resume(create(myfuncA, 1024, 21, "myfuncA", 1, 456));
+	**/
 
+	// Test Code for 6
+	kprintf("\nAttempting Hijack.\n");
+	resume(create(myprogA, 1024, 21, "myprogA", 0));
+
+	
 	/* Run the Xinu shell */
-	recvclr();
-	resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
+	//recvclr();
+	//resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
 
 	/* Wait for shell to exit and recreate it */
-	while (TRUE) {
-		receive();
-		sleepms(200);
-		kprintf("\n\nMain process recreating shell\n\n");
-		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
-	}
+	//while (TRUE) {
+	//	receive();
+	//	sleepms(200);
+	//	kprintf("\n\nMain process recreating shell\n\n");
+	//	resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
+	//}
 	return OK;
 }

@@ -7,10 +7,11 @@ int myprogA() {
 	__asm__("movl %%esp, %%ebx;"
 		: "=b" (rsp)
 	);
-	kprintf("Address: 0x%08X, Value: 0x%08X\n", (uint32)rsp, (uint32)*rsp);
+	//kprintf("Address: 0x%08X, Value: 0x%08X\n", (uint32)rsp, (uint32)*rsp);
+	
 
 	// Print Details
-	kprintf("Stack Base: 0x%08X, Stack Size: %d, Stack Limit: 0x%08X, Stack Pointer: 0x%08X, PID: %d, Parent PID: %d\n", proctab[currpid].prstkbase, proctab[currpid].prstklen, (uint32)proctab[currpid].prstkbase - (proctab[currpid].prstklen), (uint32)rsp, currpid, getppid());
+	kprintf("Stack Base: 0x%08X, Stack Size: %d, Stack Limit: 0x%08X, Stack Pointer: 0x%08X, PID: %d, Parent PID: %d\n", proctab[currpid].prstkbase, proctab[currpid].prstklen, (uint32)proctab[currpid].prstkbase - (proctab[currpid].prstklen / 4), (uint32)rsp, currpid, getppid());
 
 	// Call Function (Modified)
 	//myfuncA(456);
@@ -24,10 +25,10 @@ int myprogA() {
 	__asm__("movl %%esp, %%ebx;"
 		: "=b" (rsp)
 	);
-	kprintf("Address: 0x%08X, Value: 0x%08X\n", (uint32)rsp, (uint32)*rsp);
+	//kprintf("Address: 0x%08X, Value: 0x%08X\n", (uint32)rsp, (uint32)*rsp);
 
 	// Print Details
-	kprintf("Stack Base: 0x%08X, Stack Size: %d, Stack Limit: 0x%08X, Stack Pointer: 0x%08X, PID: %d, Parent PID: %d\n", proctab[currpid].prstkbase, proctab[currpid].prstklen, (uint32)proctab[currpid].prstkbase - (proctab[currpid].prstklen), (uint32)rsp, currpid, getppid());
+	kprintf("Stack Base: 0x%08X, Stack Size: %d, Stack Limit: 0x%08X, Stack Pointer: 0x%08X, PID: %d, Parent PID: %d\n", proctab[currpid].prstkbase, proctab[currpid].prstklen, (uint32)proctab[currpid].prstkbase - (proctab[currpid].prstklen / 4), (uint32)rsp, currpid, getppid());
 
 	// Return Int
 	return 123;
@@ -42,8 +43,8 @@ char myfuncA(int x) {
 	);
 
 	// Print Details
-	kprintf("Stack Base: 0x%08X, Stack Size: %d, Stack Limit: 0x%08X, Stack Pointer: 0x%08X, PID: %d, Parent PID: %d\n", proctab[currpid].prstkbase, proctab[currpid].prstklen, (uint32)proctab[currpid].prstkbase - (proctab[currpid].prstklen), (uint32)rsp, currpid, getppid());
-	
+	kprintf("Stack Base: 0x%08X, Stack Size: %d, Stack Limit: 0x%08X, Stack Pointer: 0x%08X, PID: %d, Parent PID: %d\n", proctab[currpid].prstkbase, proctab[currpid].prstklen, (uint32)proctab[currpid].prstkbase - (proctab[currpid].prstklen / 4), (uint32)rsp, currpid, getppid());
+
 	// Attack Code
 	uint32* base = (uint32*)proctab[getppid()].prstkbase;
 	//int i;

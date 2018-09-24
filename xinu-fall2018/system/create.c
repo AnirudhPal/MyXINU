@@ -60,6 +60,9 @@ pid32	create(
 	*saddr = STACKMAGIC;
 	savsp = (uint32)saddr;
 
+	/* Initialize cpu gross time - pal5				*/
+	prptr->pgrosscpu = 0;
+
 	/* Push arguments */
 	a = (uint32 *)(&nargs + 1);	/* Start of args		*/
 	a += nargs -1;			/* Last argument		*/

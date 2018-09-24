@@ -23,6 +23,13 @@ void	clkhandler()
 		count1000 = 1000;
 	}
 
+	/* Higher Granularity Time Counter and Proc Counter - pal5 */
+	
+	/** Since this handler is run every milli-second we can just increment the counter **/
+	
+	clktimemilli++;
+	currproctime++;
+
 	/* Handle sleeping processes if any exist */
 
 	if(!isempty(sleepq)) {

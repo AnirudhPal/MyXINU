@@ -3,6 +3,8 @@
 #include <xinu.h>
 
 uint32	clktime;		/* Seconds since boot			*/
+uint32	clktimemilli;		/* Milli-seconds since boot - pal5	*/
+uint32	clktimemilli;		/* Milli-seconds since boot - pal5	*/
 uint32	ctr1000 = 0;		/* Milliseconds since boot		*/
 qid16	sleepq;			/* Queue of sleeping processes		*/
 uint32	preempt;		/* Preemption counter			*/
@@ -23,9 +25,11 @@ void	clkinit(void)
 
 	preempt = QUANTUM;
 
-	/* Initialize the time since boot to zero */
+	/* Initialize the time since boot/process to zero - modified pal5 */
 
 	clktime = 0;
+	clktimemilli = 0;
+	currproctime = 0;
 
 	/* Set interrupt vector for the clock to invoke clkdisp */
 

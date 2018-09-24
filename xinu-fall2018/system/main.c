@@ -10,9 +10,15 @@ process	main(void) {
 
 	// Test Code for 3.1
 	kprintf("\nTesting clktimemilli.\n");
-	sleep(12);
+	sleep(1);
 	kprintf("CLKTIME: %d s\n", clktime);
 	kprintf("CLKTIMEMILLI: %d ms\n\n", clktimemilli);
+
+	// Test Code for 3.2
+	kprintf("\nTesting CPU Usage.\n");
+	resume(create(ioProc, 1024, 20, "ioProc", 2, 100, 10));
+	resume(create(cpuProc, 1024, 20, "cpuProc", 2, 100, 10000));
+	sleep(3);
 	
 	/* Run the Xinu shell */
 	/**

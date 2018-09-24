@@ -4,7 +4,7 @@
 
 uint32	clktime;		/* Seconds since boot			*/
 uint32	clktimemilli;		/* Milli-seconds since boot - pal5	*/
-uint32	clktimemilli;		/* Milli-seconds since boot - pal5	*/
+uint32	currproctime ;		/* Milli-seconds since proc - pal5	*/
 uint32	ctr1000 = 0;		/* Milliseconds since boot		*/
 qid16	sleepq;			/* Queue of sleeping processes		*/
 uint32	preempt;		/* Preemption counter			*/

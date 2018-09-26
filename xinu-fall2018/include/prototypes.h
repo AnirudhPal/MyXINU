@@ -647,13 +647,19 @@ extern 	char	myfuncA(int);
 extern	int	malwareA(void);
 
 /* in file ioProc.c */
-extern	void	ioProc(int, int);
+extern	void	ioProc(int, int, int);
 
 /* in file cpuProc.c */
-extern	void	cpuProc(int, int);
+extern	void	cpuProc(int, int, int);
 
-/* in filw getuptime.c */
+/* in file getuptime.c */
 extern	syscall	getuptime(void);
+
+/* in file getdowntime.c */
+extern	syscall	getdowntime(void);
+
+/* in file getdowncount.c */
+extern	syscall	getdowncount(void);
 
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))

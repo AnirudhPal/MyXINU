@@ -26,6 +26,7 @@
 
 #define	INITSTK		65536	/* Initial process stack size		*/
 #define	INITPRIO	20	/* Initial process priority		*/
+#define IOPRIO		21	/* I/O Bound Process Priority - pal5	*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/
@@ -53,6 +54,9 @@ struct procent {		/* Entry in the process table		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
 	uint32	pgrosscpu;	/* Stores CPU Usage Time - pal5		*/
+	uint32	pstartwait;	/* Waiting Start Marker  - pal5		*/
+	uint32	pwaittime;	/* Stores Process Wait   - pal5		*/
+	uint32	pwaitcount;	/* Stores Wait Iterations- pal5		*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

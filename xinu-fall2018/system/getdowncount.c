@@ -1,7 +1,7 @@
 #include <xinu.h>
 
-// Returns the CPU Gross Time of a Proccess
-syscall getuptime() {
+// Returns the CPU Wait Count of a Proccess
+syscall getdowncount() {
 	// Disabe Interrupts
 	intmask mask = disable();
 
@@ -15,7 +15,7 @@ syscall getuptime() {
 	}
 
 	// Return Usage Time
-	uint32 time = prptr->pgrosscpu + currproctime;
+	uint32 count = prptr->pwaitcount;
 	restore(mask);
-	return time;
+	return count;
 }

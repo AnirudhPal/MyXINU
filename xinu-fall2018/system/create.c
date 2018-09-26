@@ -63,6 +63,11 @@ pid32	create(
 	/* Initialize cpu gross time - pal5				*/
 	prptr->pgrosscpu = 0;
 
+	/* Initialize cpu wait time - pal5				*/
+	prptr->pwaittime = 0;
+	prptr->pwaitcount = 0;
+	prptr->pstartwait = 0;
+
 	/* Push arguments */
 	a = (uint32 *)(&nargs + 1);	/* Start of args		*/
 	a += nargs -1;			/* Last argument		*/

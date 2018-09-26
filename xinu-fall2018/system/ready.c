@@ -22,6 +22,11 @@ status	ready(
 
 	prptr = &proctab[pid];
 	prptr->prstate = PR_READY;
+	
+	/* Set Wait Parameters - pal5 */
+	prptr->pstartwait = clktimemilli;
+	prptr->pwaitcount++;
+
 	insert(pid, readylist, prptr->prprio);
 	resched();
 

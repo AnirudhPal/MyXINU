@@ -48,9 +48,9 @@ syscall	sleepms(
 
 	proctab[currpid].prstate = PR_SLEEP;
 	
-	/* Change Priority since it is I/O Bound - pal5 */
-	if(XINUSCHED && proctab[currpid].prprio != 0) {
-		//kprintf("IOPRIO for %s\n", proctab[currpid].prname);
+	/* Change Priority since it is I/O Bound - pal5, Sep 26 */
+	if(XINUSCHED && proctab[currpid].prprio != 0 && proctab[currpid].prprio != IOPRIO) {
+		//kprintf("IOPRIO for PID %d\n", currpid);
 		proctab[currpid].prprio = IOPRIO;
 	}
 

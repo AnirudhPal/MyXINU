@@ -32,7 +32,7 @@
 #define	INITSTK		65536	/* Initial process stack size		*/
 #define	INITPRIO	20	/* Initial process priority		*/
 #define IOPRIO		21	/* I/O Bound Process Priority - pal5, Sep 26	*/
-#define XINUSCHED	0	/* Use R3 Scheduler - pal5, Sep 26		*/
+#define XINUSCHED	1	/* Use R3 Scheduler - pal5, Sep 26		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/

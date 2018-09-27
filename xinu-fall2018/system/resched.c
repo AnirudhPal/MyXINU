@@ -36,11 +36,16 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	}
 
 	/* Force context switch to highest priority ready process */
-	ptold->pgrosscpu = ptold->pgrosscpu + currproctime; /* Add used time - pal5 */
-	currproctime = 0;		/* Reset process timer - pal5 */
+	/* The current process time is added to the gross cpu time and the counter is reset to start counting again - pal5, Sep 23 */
+	ptold->pgrosscpu = ptold->pgrosscpu + currproctime;
+	currproctime = 0;
+	
 	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
-	ptnew->pwaittime = (ptnew->pwaittime) + clktimemilli - (ptnew->pstartwait); /*Add wait time - pal5 */
+
+	/* Add wait time since ready to cumulative counter - pal5, Sep 26 */
+	ptnew->pwaittime = (ptnew->pwaittime) + clktimemilli - (ptnew->pstartwait);
+
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);

@@ -47,6 +47,13 @@ syscall	sleepms(
 	}
 
 	proctab[currpid].prstate = PR_SLEEP;
+	
+	/* Change Priority since it is I/O Bound - pal5 */
+	if(XINUSCHED && proctab[currpid].prprio != 0) {
+		//kprintf("IOPRIO for %s\n", proctab[currpid].prname);
+		proctab[currpid].prprio = IOPRIO;
+	}
+
 	resched();
 	restore(mask);
 	return OK;

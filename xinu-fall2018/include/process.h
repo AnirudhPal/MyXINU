@@ -6,6 +6,11 @@
 #define	NPROC		8
 #endif		
 
+/* R3 Testing variables - pal5, Sep 26 */
+#define	IOSLEEP		2
+#define	LOOP1		10000
+#define	LOOP2		100
+
 /* Process state constants */
 
 #define	PR_FREE		0	/* Process table entry is unused	*/
@@ -26,7 +31,8 @@
 
 #define	INITSTK		65536	/* Initial process stack size		*/
 #define	INITPRIO	20	/* Initial process priority		*/
-#define IOPRIO		21	/* I/O Bound Process Priority - pal5	*/
+#define IOPRIO		21	/* I/O Bound Process Priority - pal5, Sep 26	*/
+#define XINUSCHED	0	/* Use R3 Scheduler - pal5, Sep 26		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/

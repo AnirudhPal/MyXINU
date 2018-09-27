@@ -23,7 +23,7 @@ status	ready(
 	prptr = &proctab[pid];
 	prptr->prstate = PR_READY;
 	
-	/* Set Wait Parameters - pal5 */
+	/* Set Wait start point and increment count - pal5, Sep 26 */
 	prptr->pstartwait = clktimemilli;
 	prptr->pwaitcount++;
 

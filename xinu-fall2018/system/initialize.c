@@ -224,6 +224,9 @@ static	void	sysinit()
 
 	clkinit();
 
+	/* Set Syscall Dispatcher to Vector 33 - pal5, Sep 25 */
+	set_evec(IRQBASE + 1, (uint32)sysdisp);	
+
 	for (i = 0; i < NDEVS; i++) {
 		init(i);
 	}

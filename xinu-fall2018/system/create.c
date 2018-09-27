@@ -40,7 +40,13 @@ pid32	create(
 
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
-	prptr->prprio = priority;
+	
+	/* R3 sets priority to INITPRIO - pal5 */
+	if(XINUSCHED)
+		prptr->prprio = INITPRIO;
+	else
+		prptr->prprio = priority;
+
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;

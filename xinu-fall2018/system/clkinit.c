@@ -34,7 +34,7 @@ void	clkinit(void)
 	/* Set interrupt vector for the clock to invoke clkdisp */
 
 	set_evec(IRQBASE, (uint32)clkdisp);
-
+	
 	/* Set the hardware clock: timer 0, 16-bit counter, rate */
 	/*   generator mode, and counter runs in binary		 */
 

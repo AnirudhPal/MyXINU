@@ -661,6 +661,18 @@ extern	syscall	getdowntime(void);
 /* in file getdowncount.c */
 extern	syscall	getdowncount(void);
 
+/* in file igetpid.c */
+extern	int igetpid(void);
+
+/* in file sysdisp.S */
+extern	void sysdisp(void);
+
+/* in file appR3test.c */
+extern	void appR3test(int);
+
+/* in file pidProc.c */
+extern	void pidProc(void);
+
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))
 #define	htonl(x)  ((((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \

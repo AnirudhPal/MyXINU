@@ -23,10 +23,7 @@ void	clkhandler()
 		count1000 = 1000;
 	}
 
-	/* Higher Granularity Time Counter and Proc Counter - pal5 */
-	
-	/** Since this handler is run every milli-second we can just increment the counter **/
-	
+	/* Higher granularity system time and current process cpu time counter, both of which increment at 1ms intervals - pal5, Sep23 */	
 	clktimemilli++;
 	currproctime++;
 
@@ -46,6 +43,12 @@ void	clkhandler()
 	/*   remaining time reaches zero			     */
 
 	if((--preempt) <= 0) {
+		/* Change Priority since it is CPU Bound - pal5 */
+		if(XINUSCHED && proctab[currpid].prprio != 0) {
+			//kprintf("INITPRIO for %s\n", proctab[currpid].prname);
+			proctab[currpid].prprio = INITPRIO;
+		}
+
 		preempt = QUANTUM;
 		resched();
 	}

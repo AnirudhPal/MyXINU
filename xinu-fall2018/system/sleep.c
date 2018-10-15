@@ -49,9 +49,37 @@ syscall	sleepms(
 	proctab[currpid].prstate = PR_SLEEP;
 	
 	/* Change Priority since it is I/O Bound - pal5, Sep 26 */
-	if(XINUSCHED && proctab[currpid].prprio != 0 && proctab[currpid].prprio != IOPRIO) {
+	if(XINUSCHED == 1 && proctab[currpid].prprio != 0 && proctab[currpid].prprio != IOPRIO) {
 		//kprintf("IOPRIO for PID %d\n", currpid);
 		proctab[currpid].prprio = IOPRIO;
+	}
+
+	/* Initialize pvirtcpu to min current pvirtcpu - pal5, Oct 15 	*/
+	if(XINUSCHED == 2) {
+		struct procent* prptr = &proctab[currpid];		
+
+		// Set Initial
+		prptr->pvirtcpu = 0;
+
+		// Get Head and Tail of ReadyList
+		qid16 head = queuehead(readylist);
+		qid16 tail = queuetail(readylist);
+
+		// Move to Node
+		head = queuetab[head].qnext;
+		
+		// Set First
+		prptr->pvirtcpu = proctab[queuetab[head].qkey].pvirtcpu;
+
+		// Iterate through List
+		while(head != tail) {
+			// Get Min
+			if(proctab[queuetab[head].qkey].pvirtcpu < prptr->pvirtcpu)
+				prptr->pvirtcpu = proctab[queuetab[head].qkey].pvirtcpu;
+			
+			// Move to Next Node
+			head = queuetab[head].qnext;
+		}		
 	}
 
 	resched();

@@ -42,7 +42,7 @@ pid32	create(
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
 	
 	/* R3 sets priority to INITPRIO - pal5 */
-	if(XINUSCHED)
+	if(XINUSCHED == 1)
 		prptr->prprio = INITPRIO;
 	else
 		prptr->prprio = priority;
@@ -73,6 +73,36 @@ pid32	create(
 	prptr->pwaittime = 0;
 	prptr->pwaitcount = 0;
 	prptr->pstartwait = 0;
+
+	/* Initialize pvirtcpu to max current pvirtcpu - pal5, Oct 15 	*/
+	if(XINUSCHED == 2) {
+		// Set Initial
+		prptr->pvirtcpu = 0;
+
+		// Get Head and Tail of ReadyList
+		qid16 head = queuehead(readylist);
+		qid16 tail = queuetail(readylist);
+
+		// Move to Node
+		head = queuetab[head].qnext;
+
+		// Iterate through List
+		while(head != tail) {
+			// Get Max
+			if(proctab[queuetab[head].qkey].pvirtcpu > prptr->pvirtcpu)
+				prptr->pvirtcpu = proctab[queuetab[head].qkey].pvirtcpu;
+			
+			// Move to Next Node
+			head = queuetab[head].qnext;
+		}
+
+		// Fix 0 Problem
+		if(prptr->pvirtcpu < 0)
+			prptr->pvirtcpu = 0;
+
+		// Set Prio
+		prptr->prprio = MAXPRIO - prptr->pvirtcpu;		
+	}	
 
 	/* Push arguments */
 	a = (uint32 *)(&nargs + 1);	/* Start of args		*/

@@ -44,7 +44,7 @@ void	clkhandler()
 
 	if((--preempt) <= 0) {
 		/* Change Priority since it is CPU Bound - pal5, Sep 26 */
-		if(XINUSCHED && proctab[currpid].prprio != 0 && proctab[currpid].prprio != INITPRIO) {
+		if(XINUSCHED == 1 && proctab[currpid].prprio != 0 && proctab[currpid].prprio != INITPRIO) {
 			//kprintf("INITPRIO for PID %d\n", currpid);
 			proctab[currpid].prprio = INITPRIO;
 		}

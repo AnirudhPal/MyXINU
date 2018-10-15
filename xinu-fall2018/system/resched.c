@@ -24,6 +24,14 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	ptold = &proctab[currpid];
 
+	/* The current process time is added to the gross cpu time and the counter is reset to start counting again - pal5, Sep 23 */
+	ptold->pgrosscpu = ptold->pgrosscpu + currproctime;
+	if(XINUSCHED == 2) {
+		ptold->pvirtcpu = ptold->pvirtcpu + currproctime;
+		ptold->prprio = MAXPRIO - ptold->pvirtcpu;
+	}
+	currproctime = 0;
+
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
 		if (ptold->prprio > firstkey(readylist)) {
 			return;
@@ -36,10 +44,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	}
 
 	/* Force context switch to highest priority ready process */
-	/* The current process time is added to the gross cpu time and the counter is reset to start counting again - pal5, Sep 23 */
-	ptold->pgrosscpu = ptold->pgrosscpu + currproctime;
-	currproctime = 0;
-	
+		
 	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
 

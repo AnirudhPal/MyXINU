@@ -8,6 +8,7 @@ process	main(void) {
 
 	/* Lab 2: Test Code */
 	
+	/**	
 	// Test Code for 3.1
 	kprintf("\nTesting clktimemilli.\n");
 	sleep(2); // Syscall
@@ -37,6 +38,7 @@ process	main(void) {
 	resume(create(pidProc, 1024, 20, "pidProc3", 0));
 	resume(create(pidProc, 1024, 20, "pidProc4", 0));
 	sleep(5);
+	**/
 
 	// Test Code for 5.5 (R3 Scheduler)
 	kprintf("\nTesting R3 with 8 CPU Bound Procs.\n");
@@ -48,7 +50,7 @@ process	main(void) {
 	resume(create(appR3test, 1024, 20, "appR3test12", 1, 0));
 	resume(create(appR3test, 1024, 20, "appR3test13", 1, 0));
 	resume(create(appR3test, 1024, 20, "appR3test14", 1, 0));
-	sleep(5);	
+	sleep(25);	
 	kprintf("\nTesting R3 with 8 I/O Bound Procs.\n");
 	resume(create(appR3test, 1024, 20, "appR3test15", 1, 1));
 	resume(create(appR3test, 1024, 20, "appR3test16", 1, 1));

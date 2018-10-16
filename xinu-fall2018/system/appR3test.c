@@ -20,7 +20,7 @@ void appR3test(int proctype) {
 	kprintf("CPU Wait Time: %dms, ", getdowntime());
 	kprintf("CPU Wait Count: %d, ", getdowncount());
 	kprintf("CPU Avg Wait Time: %dms, ", getdowntime()/getdowncount());
-	kprintf("pvirtcpu: %dms, ", proctab[currpid].prprio);
-	kprintf("Prio: %d\n", proctab[currpid].prprio);
+	kprintf("pvirtcpu: %dms, ", proctab[currpid].pvirtcpu);
+	kprintf("Prio: %u\n", (uint16)proctab[currpid].prprio);
 	restore(mask);
 }

@@ -89,19 +89,15 @@ pid32	create(
 		// Iterate through List
 		while(head != tail) {
 			// Get Max
-			if(proctab[queuetab[head].qkey].pvirtcpu > prptr->pvirtcpu)
-				prptr->pvirtcpu = proctab[queuetab[head].qkey].pvirtcpu;
-			
+			if((proctab[head].pvirtcpu > prptr->pvirtcpu) && (head != NULLPROC))
+				prptr->pvirtcpu = proctab[head].pvirtcpu;
+				
 			// Move to Next Node
 			head = queuetab[head].qnext;
 		}
 
-		// Fix 0 Problem
-		if(prptr->pvirtcpu < 0)
-			prptr->pvirtcpu = 0;
-
 		// Set Prio
-		prptr->prprio = MAXPRIO - prptr->pvirtcpu;		
+		prptr->prprio = MAXPRIO - (pri16)(prptr->pvirtcpu);		
 	}	
 
 	/* Push arguments */

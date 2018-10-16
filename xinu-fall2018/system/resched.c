@@ -26,10 +26,13 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	/* The current process time is added to the gross cpu time and the counter is reset to start counting again - pal5, Sep 23 */
 	ptold->pgrosscpu = ptold->pgrosscpu + currproctime;
-	if(XINUSCHED == 2) {
+
+	// Update Virtual CPU Time and Priority - pal5, Oct 15
+	if(XINUSCHED == 2 && currpid != NULLPROC) {
 		ptold->pvirtcpu = ptold->pvirtcpu + currproctime;
 		ptold->prprio = MAXPRIO - ptold->pvirtcpu;
 	}
+
 	currproctime = 0;
 
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */

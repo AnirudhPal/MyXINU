@@ -56,10 +56,10 @@ syscall	sleepms(
 
 	/* Initialize pvirtcpu to min current pvirtcpu - pal5, Oct 15 	*/
 	if(XINUSCHED == 2) {
+		// Get Entry
 		struct procent* prptr = &proctab[currpid];		
-
 		// Set Initial
-		prptr->pvirtcpu = 0;
+		prptr->pvirtcpu = MAXPRIO;
 
 		// Get Head and Tail of ReadyList
 		qid16 head = queuehead(readylist);
@@ -68,18 +68,19 @@ syscall	sleepms(
 		// Move to Node
 		head = queuetab[head].qnext;
 		
-		// Set First
-		prptr->pvirtcpu = proctab[queuetab[head].qkey].pvirtcpu;
-
 		// Iterate through List
 		while(head != tail) {
 			// Get Min
-			if(proctab[queuetab[head].qkey].pvirtcpu < prptr->pvirtcpu)
-				prptr->pvirtcpu = proctab[queuetab[head].qkey].pvirtcpu;
-			
+			if(proctab[head].pvirtcpu < prptr->pvirtcpu && head != NULLPROC)
+				prptr->pvirtcpu = proctab[head].pvirtcpu;
+
 			// Move to Next Node
 			head = queuetab[head].qnext;
-		}		
+		}
+
+		// Fix Lonely Procs
+		if(prptr->pvirtcpu == MAXPRIO)
+			prptr->pvirtcpu = 0;		
 	}
 
 	resched();

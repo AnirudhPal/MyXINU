@@ -1,6 +1,10 @@
 /* xinu.h - include all system header files */
 
 #include <kernel.h>
+
+// Add RMS Header - pal5, Oct 16
+#include <rms.h>
+
 #include <conf.h>
 #include <process.h>
 #include <queue.h>
@@ -39,3 +43,5 @@
 #include <multiboot.h>
 #include <stdio.h>
 #include <string.h>
+
+

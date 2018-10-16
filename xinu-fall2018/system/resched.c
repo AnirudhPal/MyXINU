@@ -56,6 +56,11 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
+
+	// Quantum for RMS - pal5, Oct 16
+	if(ptnew->prrms)
+		preempt = RMSQUANTUM;
+	
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 	/* Old process returns here when resumed */
 

@@ -35,7 +35,7 @@
 #define	INITSTK		65536	/* Initial process stack size		*/
 #define	INITPRIO	20	/* Initial process priority		*/
 #define IOPRIO		21	/* I/O Bound Process Priority - pal5, Sep 26	*/
-#define XINUSCHED	2	/* Use R3 Scheduler - pal5, Sep 26 and Use CFS Scheduler - pal5, Oct 15		*/
+#define XINUSCHED	0	/* Use R3 Scheduler - pal5, Sep 26 and Use CFS Scheduler - pal5, Oct 15		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/
@@ -67,6 +67,9 @@ struct procent {		/* Entry in the process table		*/
 	uint32	pwaittime;	/* Stores Process Wait   - pal5		*/
 	uint32	pwaitcount;	/* Stores Wait Iterations- pal5		*/
 	uint32	pvirtcpu;	/* Stores Virtual CPU Time - pal5 	*/
+	bool8	prrms;		/* Identifies RMS Proc - pal5		*/
+	uint16	prct;		/* RMS Computatation Time - pal5 	*/
+	uint16	prperiod;	/* RMS Period - pal5			*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

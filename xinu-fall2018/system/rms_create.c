@@ -1,17 +1,13 @@
-/* create.c - create, newpid */
+/* RMS Create - pal5, Oct 16 */
 
 #include <xinu.h>
 
 local	int newpid();
 
-/*------------------------------------------------------------------------
- *  create  -  Create a process to start running a function on x86
- *------------------------------------------------------------------------
- */
-pid32	create(
+pid32	rms_create(
 	  void		*funcaddr,	/* Address of the function	*/
 	  uint32	ssize,		/* Stack size in bytes		*/
-	  pri16		priority,	/* Process priority > 0		*/
+	  rmsparam_t	*prms,		/* RMS Proc Properties - pal5, Oct 16*/
 	  char		*name,		/* Name (for debugging)		*/
 	  uint32	nargs,		/* Number of args that follow	*/
 	  ...
@@ -30,15 +26,49 @@ pid32	create(
 		ssize = MINSTK;
 	ssize = (uint32) roundmb(ssize);
 
-	// Modifed for RMS - pal5, Oct 16
-	if ( (priority < 1) || (priority > 29000) || ((pid=newpid()) == SYSERR) ||
-	     ((saddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) ) {
+	// Mod for RMS - pal5, Oct 16
+	if (((pid=newpid()) == SYSERR) ||
+	     ((saddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) || prms->rms_period < 20 || prms->rms_period > 1000) {
 		restore(mask);
 		return SYSERR;
 	}
 
+	/* Admission Control (Could Optimize with Custom Queue) - pal5, Oct 16 */
+	// Iterate through Proctab
+	int Tct = 0;
+	int Tperiod = 0;
+	int k;
+	for(k=0; k < NPROC; k++) {
+		// Get Proc
+		prptr = &proctab[k];
+		
+		// Is RMS Proc
+		if(prptr->prstate != PR_FREE && prptr->prrms) {
+			// Compute Totals
+			Tct = Tct + prptr->prct;
+			Tperiod = Tperiod + prptr->prperiod;
+		}
+	}
+
+	// Add New Proc Total
+	Tct = prms->rms_ct;
+	Tperiod = prms->rms_period;
+	float sum = Tct/Tperiod;
+
+	// Check if Valid
+	if(sum > RMSBOUND) {
+		restore(mask);
+		return SYSERR;
+	}
+
+
 	prcount++;
 	prptr = &proctab[pid];
+
+	/* Set as RMS Proc */
+	prptr->prrms = TRUE;
+	prptr->prct = prms->rms_ct;
+	prptr->prperiod = prms->rms_period;
 
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
@@ -47,7 +77,7 @@ pid32	create(
 	if(XINUSCHED == 1)
 		prptr->prprio = INITPRIO;
 	else
-		prptr->prprio = priority;
+		prptr->prprio = 30000 - prptr->prperiod;
 
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;

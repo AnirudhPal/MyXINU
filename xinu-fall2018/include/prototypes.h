@@ -676,6 +676,8 @@ extern	void pidProc(void);
 /* in file rms_create.c */
 extern	pid32	rms_create(void *, uint32, rmsparam_t*, char *, uint32, ...);
 
+/* in file rms_app.c */
+extern	void rms_app(uint32, uint32);
 
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))

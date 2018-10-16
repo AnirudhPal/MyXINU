@@ -75,7 +75,7 @@ pid32	rms_create(
 	
 	/* R3 sets priority to INITPRIO - pal5 */
 	if(XINUSCHED == 1)
-		prptr->prprio = INITPRIO;
+		prptr->prprio = 30000 - prptr->prperiod;
 	else
 		prptr->prprio = 30000 - prptr->prperiod;
 

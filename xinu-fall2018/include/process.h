@@ -6,11 +6,6 @@
 #define	NPROC		8
 #endif		
 
-/* R3 Testing variables - pal5, Sep 26 */
-#define	IOSLEEP		1
-#define	LOOP1		10000
-#define	LOOP2		300
-
 /* CFS Vars - pal5, Oct 15 */
 #define MAXPRIO		0x7FFF
 
@@ -33,9 +28,9 @@
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
-#define	INITPRIO	20	/* Initial process priority		*/
+#define	INITPRIO	/*0x7FFF*/20	/* Initial process priority, Moded for testing - pal5, Oct 16		*/
 #define IOPRIO		21	/* I/O Bound Process Priority - pal5, Sep 26	*/
-#define XINUSCHED	0	/* Use R3 Scheduler - pal5, Sep 26 and Use CFS Scheduler - pal5, Oct 15		*/
+#define XINUSCHED	1	/* Use R3 Scheduler - pal5, Sep 26 and Use CFS Scheduler - pal5, Oct 15		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/

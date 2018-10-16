@@ -41,7 +41,7 @@ process	main(void) {
 	resume(create(appR3test, 1024, 20, "appR3test29", 1, 0));
 	resume(create(appR3test, 1024, 20, "appR3test30", 1, 1));
 	sleep(25);
-	**/
+	
 
 	kprintf("\nTesting CFS with Dynamic 4 CPU Bound and 4 I/O Bound Procs.\n");
 	resume(create(appR3test, 1024, 20, "appR3test23", 1, 0));
@@ -60,7 +60,38 @@ process	main(void) {
 	sleepms(500);
 	resume(create(appR3test, 1024, 20, "appR3test30", 1, 1));
 	sleep(25);
+
+	kprintf("\nTesting RMS with 4 Real Time Procs.\n");
+	**/
+	rmsparam_t p1, p2, p3, p4;
+	p1.rms_ct = 300;
+	p1.rms_period = 999;
+	p2.rms_ct = 100;
+	p2.rms_period = 1000;
+	p3.rms_ct = 50;
+	p3.rms_period = 900;
+	p4.rms_ct = 25;
+	p4.rms_period = 800;
 	
+	/**
+	resume(rms_create(rms_app, 1024, &p1, "rms_app1", 2, p1.rms_ct, p1.rms_period));		
+	resume(rms_create(rms_app, 1024, &p2, "rms_app2", 2, p2.rms_ct, p2.rms_period));	
+	resume(rms_create(rms_app, 1024, &p3, "rms_app3", 2, p3.rms_ct, p3.rms_period));	
+	resume(rms_create(rms_app, 1024, &p4, "rms_app4", 2, p4.rms_ct, p4.rms_period));
+	sleep(25);
+	**/
+
+	kprintf("\nTesting R3 with RMS\n");
+	resume(create(appR3test, 1024, 20, "appR3test7", 1, 0));
+	resume(create(appR3test, 1024, 20, "appR3test8", 1, 0));
+	resume(create(appR3test, 1024, 20, "appR3test9", 1, 0));
+	resume(create(appR3test, 1024, 20, "appR3test10", 1, 0));
+	resume(rms_create(rms_app, 1024, &p1, "rms_app1", 2, p1.rms_ct, p1.rms_period));		
+	resume(rms_create(rms_app, 1024, &p2, "rms_app2", 2, p2.rms_ct, p2.rms_period));	
+	resume(rms_create(rms_app, 1024, &p3, "rms_app3", 2, p3.rms_ct, p3.rms_period));	
+	resume(rms_create(rms_app, 1024, &p4, "rms_app4", 2, p4.rms_ct, p4.rms_period));
+	sleep(25);
+
 	/* Run the Xinu shell */
 	/**
 	recvclr();

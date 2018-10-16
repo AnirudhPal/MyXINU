@@ -1,5 +1,11 @@
 #include <xinu.h>
 
+/* R3 Testing variables - pal5, Sep 26 */
+#define	IOSLEEP		1
+#define	LOOP1		10000
+#define	LOOP2		300
+
+
 void appR3test(int proctype) {
 	int i, j;
 	for (i=0; i<LOOP1; i++) { // Affects overall run-time of app.

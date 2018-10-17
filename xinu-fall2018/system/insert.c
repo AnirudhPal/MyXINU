@@ -24,6 +24,10 @@ status	insert(
 		curr = queuetab[curr].qnext;
 	}
 
+	/* Set Wait start point and increment count - pal5, Sep 26 */
+	proctab[pid].pstartwait = clktimemilli;
+	proctab[pid].pwaitcount++;
+
 	/* Insert process between curr node and previous node */
 
 	prev = queuetab[curr].qprev;	/* Get index of previous node	*/

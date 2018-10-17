@@ -86,11 +86,11 @@ process	main(void) {
 	resume(create(appR3test, 1024, 20, "appR3test8", 1, 0));
 	resume(create(appR3test, 1024, 20, "appR3test9", 1, 0));
 	resume(create(appR3test, 1024, 20, "appR3test10", 1, 0));
-	resume(rms_create(rms_app, 1024, &p1, "rms_app1", 2, p1.rms_ct, p1.rms_period));		
+	/*resume(rms_create(rms_app, 1024, &p1, "rms_app1", 2, p1.rms_ct, p1.rms_period));		
 	resume(rms_create(rms_app, 1024, &p2, "rms_app2", 2, p2.rms_ct, p2.rms_period));	
 	resume(rms_create(rms_app, 1024, &p3, "rms_app3", 2, p3.rms_ct, p3.rms_period));	
 	resume(rms_create(rms_app, 1024, &p4, "rms_app4", 2, p4.rms_ct, p4.rms_period));
-	sleep(25);
+	sleep(25);*/
 
 	/* Run the Xinu shell */
 	/**

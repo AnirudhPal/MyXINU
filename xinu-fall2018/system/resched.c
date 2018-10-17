@@ -52,7 +52,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptnew = &proctab[currpid];
 
 	/* Add wait time since ready to cumulative counter - pal5, Sep 26 */
-	ptnew->pwaittime = (ptnew->pwaittime) + clktimemilli - (ptnew->pstartwait);
+	ptnew->pwaittime = (ptnew->pwaittime) + (clktimemilli - (ptnew->pstartwait));
 
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/

@@ -1,5 +1,5 @@
 #include <xinu.h>
-#define L1	10
+#define L1	5
 
 void rms_app(uint32 x, uint32 y) {
 	uint32 period_start, grosscpu_start, comp_received;

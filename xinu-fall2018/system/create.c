@@ -31,7 +31,7 @@ pid32	create(
 	ssize = (uint32) roundmb(ssize);
 
 	// Modifed for RMS - pal5, Oct 16
-	if ( (priority < 1) /**|| (priority > 29000)**/ || ((pid=newpid()) == SYSERR) ||
+	if ( (priority < 1) || (priority > 29000) || ((pid=newpid()) == SYSERR) ||
 	     ((saddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) ) {
 		restore(mask);
 		return SYSERR;

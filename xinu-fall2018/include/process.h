@@ -65,6 +65,8 @@ struct procent {		/* Entry in the process table		*/
 	bool8	prrms;		/* Identifies RMS Proc - pal5		*/
 	uint16	prct;		/* RMS Computatation Time - pal5 	*/
 	uint16	prperiod;	/* RMS Period - pal5			*/
+	void	(*funcptr)();	/* Call Back - pal5			*/
+	uint32	prretadd;	/* Return Address - pal5		*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

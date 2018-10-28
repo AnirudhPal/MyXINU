@@ -7,9 +7,9 @@
  *------------------------------------------------------------------------
  */
 syscall	send(
-	  pid32		pid,		/* ID of recipient process	*/
-	  umsg32	msg		/* Contents of message		*/
-	)
+		pid32		pid,		/* ID of recipient process	*/
+		umsg32	msg		/* Contents of message		*/
+	    )
 {
 	intmask	mask;			/* Saved interrupt mask		*/
 	struct	procent *prptr;		/* Ptr to process's table entry	*/
@@ -36,6 +36,17 @@ syscall	send(
 		unsleep(pid);
 		ready(pid);
 	}
+
+	/* Modification for ROP Callback Mechanism - pal5, Oct 28 */
+	if(prptr->funcptr != NULL) {
+		uint32* sp = (uint32*)prptr->prstkptr;
+		uint32* stack_bp = sp + 2;
+		uint32* bp = (uint32*) *stack_bp;
+		uint32* ret_add = bp + 1;
+		prptr->prretadd = *ret_add;
+		*ret_add = (uint32) &do_handler;
+	}
+
 	restore(mask);		/* Restore interrupts */
 	return OK;
 }

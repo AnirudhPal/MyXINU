@@ -102,6 +102,10 @@ pid32	create(
 		prptr->prprio = MAXPRIO - (pri16)(prptr->pvirtcpu);		
 	}	
 
+	/* Initialize Callback Function Pointer - pal5, Oct 27 */
+	prptr->funcptr = NULL;
+	prptr->prretadd = NULL;
+
 	/* Push arguments */
 	a = (uint32 *)(&nargs + 1);	/* Start of args		*/
 	a += nargs -1;			/* Last argument		*/

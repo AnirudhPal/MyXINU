@@ -679,6 +679,22 @@ extern	pid32	rms_create(void *, uint32, rmsparam_t*, char *, uint32, ...);
 /* in file rms_app.c */
 extern	void rms_app(uint32, uint32);
 
+/* in file reghandler.c */
+extern	syscall reghandler(void(*)(void));
+
+/* in file sender.c */
+extern	void sender(pid32, umsg32); 
+
+/* in file receiver.c */
+extern	void receiver(void);
+
+/* in file do_shandler.c */
+extern	void do_shandler(void);
+
+/* in file do_handler.S */
+extern	void do_handler(void);
+
+
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))
 #define	htonl(x)  ((((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \

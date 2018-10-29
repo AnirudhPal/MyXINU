@@ -34,6 +34,28 @@ process	main(void) {
 	sleep(5);
 	//resume(create(receiver2, 2042, 10, "receiver2", 0));
 
+	kprintf("\nTesting SIGRECV\n");
+	kprintf("\nTesting Single Sender\n");
+	resume(create(receiversig, 2042, 10, "receiversig0", 0));
+	resume(create(sender, 2042, 15, "sender0", 2, 15, 1234));
+	sleep(5);
+	
+	kprintf("\nTesting Single Sender with Sleeping receiversig\n");
+	resume(create(receiversigslp, 2042, 10, "receiversigslp0", 0));
+	resume(create(sender, 2042, 15, "sender1", 2, 17, 4321));
+	sleep(5);
+	
+	kprintf("\nTesting Multiple Senders\n");
+	resume(create(receiversig, 2042, 10, "receiversig1", 0));
+	resume(create(sender, 2042, 15, "sender2", 2, 19, 1111));
+	sleep(5);
+	resume(create(sender, 2042, 15, "sender3", 2, 19, 2222));
+	sleep(5);
+	resume(create(sender, 2042, 15, "sender4", 2, 19, 3333));
+	sleep(5);
+	resume(create(sender, 2042, 15, "sender5", 2, 19, 4444));
+	sleep(5);
+
 	/* Run the Xinu shell */
 	/**
 	recvclr();

@@ -38,6 +38,7 @@ syscall	send(
 	}
 
 	/* Modification for ROP Callback Mechanism - pal5, Oct 28 */
+	// Use ROP (Legacy)
 	if(prptr->funcptr != NULL) {
 		uint32* sp = (uint32*)prptr->prstkptr;
 		uint32* stack_bp = sp + 2;
@@ -46,6 +47,10 @@ syscall	send(
 		prptr->prretadd = *ret_add;
 		*ret_add = (uint32) &do_handler;
 	}
+
+	// Use Signal
+	if(prptr->prsig[SIGRECV].regyes)
+		sendSignal(pid, SIGRECV);
 
 	restore(mask);		/* Restore interrupts */
 	return OK;

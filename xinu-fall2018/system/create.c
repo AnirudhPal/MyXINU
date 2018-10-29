@@ -103,14 +103,21 @@ pid32	create(
 	}	
 
 	/* Initialize Callback Function Pointer - pal5, Oct 27 */
+	// Set Handler and Return to NULL
 	prptr->funcptr = NULL;
 	prptr->prretadd = NULL;
+
+	// Set Handlers to NULL
 	int k;
 	for(k = 0; k < SIGNUM; k++) {
 		prptr->prsig[k].regyes = FALSE;
 		prptr->prsig[k].fnt = NULL;
 		prptr->prsig[k].optarg = 0;
 	}
+
+	// Set Received Signals to NULL
+	prptr->sigs[0] = -1;
+	prptr->sigs[1] = -1;
 
 	/* Push arguments */
 	a = (uint32 *)(&nargs + 1);	/* Start of args		*/

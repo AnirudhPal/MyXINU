@@ -12,6 +12,9 @@ void do_handler() {
 	// Run Callback
 	proctab[currpid].funcptr();
 
+	// Disable Interrupts
+	disable();
+
 	// Fix Return
 	uint32* bp;
 	__asm__("movl %%ebp, %0;"
@@ -19,9 +22,6 @@ void do_handler() {
 	);
 	uint32* ret_add = bp+1;
 	*ret_add = proctab[currpid].prretadd;
-
-	// Disable Interrupts
-	disable();
 
 	// Return
 	return;

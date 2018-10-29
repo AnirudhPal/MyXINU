@@ -47,9 +47,9 @@ syscall sendSignal(int pid, int sig) {
 		restore(mask);
 		return OK;
 	}
-	/**
+
 	// Full
-	if(prptr->sigs[2] != -1) {
+	if(prptr->sigs[1] != -1) {
 		restore(mask);
 		return SYSERR;
 	}
@@ -62,12 +62,12 @@ syscall sendSignal(int pid, int sig) {
 
 	// Send Signal
 	int i;
-	for(i = 0; i < 3; i++)
+	for(i = 0; i < 2; i++)
 		if(prptr->sigs[i] == -1) {
 			prptr->sigs[i] = sig;
 			break;
 		}
-	**/
+	
 	// Return
 	restore(mask);
 	return OK;

@@ -700,6 +700,11 @@ extern	void receiverslp(void);
 /* in file receivercpu.c */
 extern	void receivercpu(void);
 
+/* in file receiversig.c */
+extern	void receiversig(void);
+
+/* in file receiversigslp.c */
+extern	void receiversigslp(void);
 
 /* in file receiver2.c */
 extern	void receiver2(void);

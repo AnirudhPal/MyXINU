@@ -60,6 +60,18 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	// Quantum for RMS - pal5, Oct 16
 	if(ptnew->prrms)
 		preempt = RMSQUANTUM;
+
+	// For Signals - pal5, Qct 29
+	// Has Signal
+	
+	if(currpid != NULLPROC && ptnew->sigs[0] != -1) {
+		uint32* sp = (uint32*)ptnew->prstkptr;
+		uint32* stack_bp = sp + 2;
+		uint32* bp = (uint32*) *stack_bp;
+		uint32* ret_add = bp + 1;
+		ptnew->prretadd = *ret_add;
+		*ret_add = (uint32) &do_shandler;
+	}
 		
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 	/* Old process returns here when resumed */

@@ -39,6 +39,14 @@ void	clkhandler()
 		}
 	}
 
+	/* Handle if SIGXCPU - pal5, Oct 29 */
+	// Check if Callback
+	if(proctab[currpid].prsig[SIGXCPU].regyes)
+		// Check if Time Limit Reached
+		if(proctab[currpid].prsig[SIGXCPU].optarg < getuptime())
+			// Send Signal
+			sendSignal(currpid, SIGXCPU);
+
 	/* Decrement the preemption counter, and reschedule when the */
 	/*   remaining time reaches zero			     */
 

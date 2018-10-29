@@ -5,6 +5,9 @@
 // Add RMS Header - pal5, Oct 16
 #include <rms.h>
 
+// Add Signal Header - pal5, Oct 28
+#include <xsignal.h>
+
 #include <conf.h>
 #include <process.h>
 #include <queue.h>

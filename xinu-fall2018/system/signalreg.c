@@ -2,7 +2,7 @@
 #include <xinu.h>
 
 // Define System Call
-syscall	reghandler(void(*func) (void)) {
+syscall	signalreg(uint16 nsig, int(*func) (void), uint32 oarg) {
 	// Local Vars
 	intmask	mask;			
 	struct	procent *rprptr;
@@ -13,8 +13,8 @@ syscall	reghandler(void(*func) (void)) {
 	// Get Process Entry
 	rprptr = &proctab[currpid];
 
-	// If Already Set or NULL Pointer
-	if(rprptr->funcptr != NULL || func == NULL) {
+	// If Invalid Signal or Pointer or Already Reg
+	if(nsig < 0 || nsig >= SIGNUM || func == NULL || rprptr->prsig[nsig].regyes) {
 		// Enable Interrupts
 		restore(mask);
 
@@ -22,8 +22,10 @@ syscall	reghandler(void(*func) (void)) {
 		return SYSERR;
 	}
 
-	// Set Function Pointer
-	rprptr->funcptr = func;
+	// Add Handler
+	rprptr->prsig[nsig].regyes = TRUE;
+	rprptr->prsig[nsig].fnt = func;
+	rprptr->prsig[nsig].optarg = oarg;
 
 	// Enable Interrupts
 	restore(mask);

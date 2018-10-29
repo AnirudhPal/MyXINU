@@ -67,6 +67,7 @@ struct procent {		/* Entry in the process table		*/
 	uint16	prperiod;	/* RMS Period - pal5			*/
 	void	(*funcptr)();	/* Call Back - pal5			*/
 	uint32	prretadd;	/* Return Address - pal5		*/
+	struct xsigtab prsig[SIGNUM]; /* Signal Handlers - pal5		*/ 
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

@@ -26,7 +26,12 @@ process	main(void) {
 	resume(create(sender, 2042, 15, "sender4", 2, 8, 3333));
 	sleep(5);
 	resume(create(sender, 2042, 15, "sender5", 2, 8, 4444));
-	sleep(5);	
+	sleep(5);
+
+	kprintf("\nTesting SIGXCPU with 2 Procs\n");
+	resume(create(receivercpu, 2042, 10, "receivercpu0", 0));
+	resume(create(receivercpu, 2042, 10, "receivercpu1", 0));
+	sleep(5);
 	//resume(create(receiver2, 2042, 10, "receiver2", 0));
 
 	/* Run the Xinu shell */

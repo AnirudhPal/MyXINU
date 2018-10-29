@@ -105,6 +105,12 @@ pid32	create(
 	/* Initialize Callback Function Pointer - pal5, Oct 27 */
 	prptr->funcptr = NULL;
 	prptr->prretadd = NULL;
+	int k;
+	for(k = 0; k < SIGNUM; k++) {
+		prptr->prsig[k].regyes = FALSE;
+		prptr->prsig[k].fnt = NULL;
+		prptr->prsig[k].optarg = 0;
+	}
 
 	/* Push arguments */
 	a = (uint32 *)(&nargs + 1);	/* Start of args		*/

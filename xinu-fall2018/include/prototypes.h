@@ -682,6 +682,12 @@ extern	void rms_app(uint32, uint32);
 /* in file reghandler.c */
 extern	syscall reghandler(void(*)(void));
 
+/* in file signalreg.c */
+extern	syscall signalreg(uint16, int(*)(void), uint32);
+
+/* in file sendSignal.c */
+syscall sendSignal(int, int);
+
 /* in file sender.c */
 extern	void sender(pid32, umsg32); 
 
@@ -690,6 +696,10 @@ extern	void receiver(void);
 
 /* in file receiverslp.c */
 extern	void receiverslp(void);
+
+/* in file receivercpu.c */
+extern	void receivercpu(void);
+
 
 /* in file receiver2.c */
 extern	void receiver2(void);

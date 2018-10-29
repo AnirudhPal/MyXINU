@@ -5,7 +5,7 @@
 void sender(pid32 pid, umsg32 msg) {
 	// Print Message
 	intmask mask = disable();
-	kprintf("PID: %d Sender (SEND) -> %d to PID: %d @ %dms\n", currpid, msg, pid, clktimemilli);
+	kprintf("PID: %d, PName: %s, Msg: %d, To PID: %d, Time: %dms, Start Sending\n", currpid, proctab[currpid].prname, msg, pid, clktimemilli); 	
 	restore(mask);
 
 	// Send Message
@@ -21,7 +21,7 @@ void sender(pid32 pid, umsg32 msg) {
 
 	// Print Message
 	mask = disable();
-	kprintf("PID: %d Sender (SEND) Done Sending @ %dms\n", currpid, clktimemilli);
+	kprintf("PID: %d, PName: %s, Msg: %d, To PID: %d, Time: %dms, Start Done\n", currpid, proctab[currpid].prname, msg, pid, clktimemilli); 	
 	restore(mask);	 
 }
 

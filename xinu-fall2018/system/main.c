@@ -6,10 +6,28 @@ process	main(void) {
 	/* Print Welcome Messages */
 	welcome();
 
-	/* Lab 3: Test Code */
-	//kprintf("resched: %d\n", (uint32)&resched);
-	resume(create(receiver, 2042, 10, "receiver", 0));
-	resume(create(sender, 2042, 15, "sender", 2, 4, 1213));	
+	/* Lab 4: Test Code */
+	kprintf("\nTesting Single Sender\n");
+	resume(create(receiver, 2042, 10, "receiver0", 0));
+	resume(create(sender, 2042, 15, "sender0", 2, 4, 1234));
+	sleep(5);
+
+	kprintf("\nTesting Single Sender with Sleeping Receiver\n");
+	resume(create(receiverslp, 2042, 10, "receiverslp0", 0));
+	resume(create(sender, 2042, 15, "sender1", 2, 6, 4321));
+	sleep(5);
+
+	kprintf("\nTesting Multiple Senders\n");
+	resume(create(receiver, 2042, 10, "receiver1", 0));
+	resume(create(sender, 2042, 15, "sender2", 2, 8, 1111));
+	sleep(5);
+	resume(create(sender, 2042, 15, "sender3", 2, 8, 2222));
+	sleep(5);
+	resume(create(sender, 2042, 15, "sender4", 2, 8, 3333));
+	sleep(5);
+	resume(create(sender, 2042, 15, "sender5", 2, 8, 4444));
+	sleep(5);	
+	//resume(create(receiver2, 2042, 10, "receiver2", 0));
 
 	/* Run the Xinu shell */
 	/**

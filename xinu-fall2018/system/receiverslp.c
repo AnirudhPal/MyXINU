@@ -2,28 +2,29 @@
 #include <xinu.h>
 
 // Global Var
-extern umsg32 msgbuf = 0;
+extern umsg32 msgbufslp = 0;
 
 // Define Callback
-void myrcv() {
+void myrcvslp() {
 	// Get Message
-	msgbuf = receive();
+	msgbufslp = receive();
 
 	// Print Message
 	intmask mask = disable();
-	kprintf("PID: %d, PName: %s, Msg: %d, Time: %dms, From Callback\n", currpid, proctab[currpid].prname,msgbuf, clktimemilli); 	
+	kprintf("PID: %d, PName: %s, Msg: %d, Time: %dms, From Callback\n", currpid, proctab[currpid].prname, msgbufslp, clktimemilli); 	
 	restore(mask);
 }
 
 // Define Process
-void receiver() {
+void receiverslp() {
 	// Register Callback
-	if (reghandler(&myrcv) != OK) {
+	if (reghandler(&myrcvslp) != OK) {
 		kprintf("recv handler registration failed\n");
 		return;
 	}
 
 	// Infinite Loop
 	while(TRUE) {
+		sleep(1);
 	}
 }

@@ -688,12 +688,20 @@ extern	void sender(pid32, umsg32);
 /* in file receiver.c */
 extern	void receiver(void);
 
+/* in file receiverslp.c */
+extern	void receiverslp(void);
+
+/* in file receiver2.c */
+extern	void receiver2(void);
+
 /* in file do_shandler.c */
 extern	void do_shandler(void);
 
-/* in file do_handler.S */
+/* in file do_handler.c */
 extern	void do_handler(void);
 
+/* in file do_handlerS.S */
+extern	void do_handlerS(void);
 
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))

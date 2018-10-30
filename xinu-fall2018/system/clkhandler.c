@@ -40,6 +40,14 @@ void	clkhandler()
 	}
 
 	/* Handle if SIGXCPU - pal5, Oct 29 */
+	if(!isempty(alarmq)) {
+		if((--queuetab[firstid(alarmq)].qkey) <= 0) {
+			int id = dequeue(alarmq) - (NPROC / 2);
+			sendSignal(id, SIGTIME);
+		}
+	}
+
+	/* Handle if SIGXCPU - pal5, Oct 29 */
 	// Check if Callback
 	if(proctab[currpid].prsig[SIGXCPU].regyes)
 		// Check if Time Limit Reached

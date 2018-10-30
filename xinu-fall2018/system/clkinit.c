@@ -7,6 +7,7 @@ uint32	clktimemilli;		/* Milli-seconds since boot - pal5	*/
 uint32	currproctime ;		/* Milli-seconds since proc - pal5	*/
 uint32	ctr1000 = 0;		/* Milliseconds since boot		*/
 qid16	sleepq;			/* Queue of sleeping processes		*/
+qid16	alarmq;			/* Queue of alarm processes		*/
 uint32	preempt;		/* Preemption counter			*/
 
 /*------------------------------------------------------------------------
@@ -20,6 +21,9 @@ void	clkinit(void)
 	/* Allocate a queue to hold the delta list of sleeping processes*/
 
 	sleepq = newqueue();
+
+	// Create New Delta Queue - pal5, Oct 29
+	alarmq = newqueue();
 
 	/* Initialize the preemption count */
 

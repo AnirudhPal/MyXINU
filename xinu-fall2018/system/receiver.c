@@ -22,6 +22,7 @@ void receiver() {
 	kprintf("PID: %d, PName: %s, Time: %dms, Starting Proc\n", currpid, proctab[currpid].prname, clktimemilli); 	
 	restore(mask);
 
+
 	// Register Callback
 	if (reghandler(&myrcv) != OK) {
 		kprintf("recv handler registration failed\n");

@@ -4,7 +4,7 @@
 
 #ifndef NPROC
 #define	NPROC		8
-#endif		
+#endif
 
 /* CFS Vars - pal5, Oct 15 */
 #define MAXPRIO		0x7FFF
@@ -35,8 +35,9 @@
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/
 
+// PID Halved for New Delta Queue - pal5, Qct 29
 #define	isbadpid(x)	( ((pid32)(x) < 0) || \
-			  ((pid32)(x) >= NPROC) || \
+			  ((pid32)(x) >= (NPROC / 2)) || \
 			  (proctab[(x)].prstate == PR_FREE))
 
 /* Number of device descriptors a process can have open */

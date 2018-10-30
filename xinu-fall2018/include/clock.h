@@ -12,6 +12,7 @@
 extern	uint32	clktime;	/* current time in secs since boot	*/
 extern	uint32	clktimemilli;	/* current time in ms since boot - pal5 */
 extern	qid16	sleepq;		/* queue for sleeping processes		*/
+extern	qid16	alarmq;		/* queue for alamr procs - pal5		*/
 extern	uint32	preempt;	/* preemption counter			*/
 extern	uint32	currproctime;	/* current time since process - pal5	*/
 

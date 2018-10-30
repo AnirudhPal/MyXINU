@@ -706,6 +706,15 @@ extern	void receiversig(void);
 /* in file receiversigslp.c */
 extern	void receiversigslp(void);
 
+/* in file receiveralm.c */
+extern	void receiveralm(void);
+
+/* in file receiveralmslp.c */
+extern	void receiveralmslp(void);
+
+/* in file receivermix.c */
+extern	void receivermix(void);
+
 /* in file receiver2.c */
 extern	void receiver2(void);
 
@@ -717,6 +726,12 @@ extern	void do_handler(void);
 
 /* in file do_handlerS.S */
 extern	void do_handlerS(void);
+
+/* in file xalarm.c */
+extern	syscall	xalarm(int32);
+
+/* in file insertda.c */
+extern	status	insertda(pid32, qid16, int32);
 
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
 #define	htons(x)  ((0xff & ((x)>>8)) | ((0xff & (x)) << 8))

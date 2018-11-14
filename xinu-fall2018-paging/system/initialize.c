@@ -20,6 +20,8 @@ extern	void meminit(void);	/* Initializes the free memory list	*/
 struct	procent	proctab[NPROC];	/* Process table			*/
 struct	sentry	semtab[NSEM];	/* Semaphore table			*/
 struct	memblk	memlist;	/* List of free memory blocks		*/
+frame frametab[NFRAMES];	/* Frames table = pal5, Oct 13		*/
+
 
 /* Active system status */
 
@@ -50,6 +52,8 @@ void	nulluser()
 	/* Initialize the system */
 		
 	sysinit();
+
+	initialize_paging();		// Initialize Paging - pal5, Oct 10
 
 	kprintf("\n\r%s\n\n\r", VERSION);
 	
@@ -186,6 +190,192 @@ static	void	sysinit()
         bs_init_sem = semcreate(1);
 
 	return;
+}
+
+/*------------------------------------------------------------------------
+ *
+ * initialize_paging - Initialize all Xinu Paging System. pal5, Nov 10
+ *
+ *------------------------------------------------------------------------
+ */
+void	initialize_paging() {
+	// Step 1: Intialize Frame, Page Directory, Page Table and Page Data Structure
+	initialize_frames();	 
+
+	// Step 2: Allocate a PD for Null Proc
+	initialize_pd_null();
+
+	// Step 3: Make 4 Page Tables that map first 4096 Frames	
+	// Step 4: Make 1 Page Table that map 1024 frames from 0x90000000
+	initialize_pt_null();
+	//testPrint5Frames();
+ 
+	// Step 5: Set PDBR for Null Proc
+	setPDBR(1024);//frametab[0].loc);
+
+	// Step 6: Set Page Fault ISR
+
+	// Step 7: Turn On Paging
+	pagingOn();
+
+	// Return Control
+	return;
+}
+
+/*------------------------------------------------------------------------
+ *
+ * initialize_frames - Initialize frames after OG Xinu. pal5, Nov 13
+ *
+ *------------------------------------------------------------------------
+ */
+void	initialize_frames() {
+	// Create Frames
+	int i;
+	for(i = 0; i < NFRAMES; i++) {
+		// Set Unused
+		frametab[i].isUsed = FALSE;
+
+		// Set Type
+		frametab[i].type = FREE_FRAME;
+		
+		// Set Location (Pyhsical/Virtual)
+		frametab[i].loc = (i + FRAME0) * NBPG;
+	}
+}
+
+
+/*------------------------------------------------------------------------
+ *
+ * initialize_pd_null - Initialize PD for Null Proc pal5, Nov 13
+ *
+ *------------------------------------------------------------------------
+ */
+void	initialize_pd_null() {
+	// Put PD at FRAME0
+	pd_t* nullPD = (pd_t*)frametab[0].loc;
+	frametab[0].isUsed = TRUE;
+	frametab[0].type = PD_FRAME;
+
+	// Set PDE Bits to 0 (Can be Optimized)
+	int i;
+	for(i = 0; i < 1024; i++) {
+		nullPD[i].pd_pres = 0;	
+		nullPD[i].pd_write = 0;
+		nullPD[i].pd_user = 0;
+		nullPD[i].pd_pwt = 0;
+		nullPD[i].pd_pcd = 0;
+		nullPD[i].pd_acc = 0;
+		nullPD[i].pd_mbz = 0;
+		nullPD[i].pd_fmb = 0;
+		nullPD[i].pd_global = 0;
+		nullPD[i].pd_avail = 0;
+		nullPD[i].pd_base = 0;										
+	}
+
+	// Set 4 PDE (Can be Optimized)
+	for(i = 0; i < 4; i++) {
+		nullPD[i].pd_pres = 1;	
+		nullPD[i].pd_write = 1;
+		nullPD[i].pd_user = 0;
+		nullPD[i].pd_pwt = 0;
+		nullPD[i].pd_pcd = 0;
+		nullPD[i].pd_acc = 0;
+		nullPD[i].pd_mbz = 0;
+		nullPD[i].pd_fmb = 0;
+		nullPD[i].pd_global = 0;
+		nullPD[i].pd_avail = 0;
+		nullPD[i].pd_base = FRAME0 + 1 + i;//frametab[i + 1].loc / NBPG; 								
+	}
+
+	// Set Dev PDE (Can be Optimized)
+	nullPD[576].pd_pres = 1;	
+	nullPD[576].pd_write = 1;
+	nullPD[576].pd_user = 0;
+	nullPD[576].pd_pwt = 0;
+	nullPD[576].pd_pcd = 0;
+	nullPD[576].pd_acc = 0;
+	nullPD[576].pd_mbz = 0;
+	nullPD[576].pd_fmb = 0;
+	nullPD[576].pd_global = 0;
+	nullPD[576].pd_avail = 0;
+	nullPD[576].pd_base = FRAME0 + 5;//frametab[5].loc / NBPG; 
+}
+
+/*------------------------------------------------------------------------
+ *
+ * initialize_pt_null - Initialize PT for Null Proc pal5, Nov 13
+ *
+ *------------------------------------------------------------------------
+ */
+void	initialize_pt_null() {
+	// Stage Var
+	pt_t* nullPT;
+	
+	// Set 4 PT
+	int i;
+	for(i = 0; i < 4; i++) {
+		// Put PT at FRAME1 + i
+		nullPT = (pd_t*)frametab[i + 1].loc;
+		frametab[i + 1].isUsed = TRUE;
+		frametab[i + 1].type = PT_FRAME;
+
+		// Set PTE Bits to 0 (Can be Optimized)
+		int j;
+		for(j = 0; j < 1024; j++) {
+			nullPT[j].pt_pres = 1;	
+			nullPT[j].pt_write = 1;
+			nullPT[j].pt_user = 0;
+			nullPT[j].pt_pwt = 0;
+			nullPT[j].pt_pcd = 0;
+			nullPT[j].pt_acc = 0;
+			nullPT[j].pt_dirty = 0;
+			nullPT[j].pt_mbz = 0;
+			nullPT[j].pt_global = 0;
+			nullPT[j].pt_avail = 0;
+			nullPT[j].pt_base = i * 1024 + j; //??
+		}										
+	}
+
+	// Set Dev PT
+	// Put PT at FRAME5
+	nullPT = (pd_t*)frametab[5].loc;
+	frametab[5].isUsed = TRUE;
+	frametab[5].type = PT_FRAME;
+
+	// Set PTE Bits to 0 (Can be Optimized)
+	for(i = 0; i < 1024; i++) {
+		nullPT[i].pt_pres = 1;	
+		nullPT[i].pt_write = 1;
+		nullPT[i].pt_user = 0;
+		nullPT[i].pt_pwt = 0;
+		nullPT[i].pt_pcd = 0;
+		nullPT[i].pt_acc = 0;
+		nullPT[i].pt_dirty = 0;
+		nullPT[i].pt_mbz = 0;
+		nullPT[i].pt_global = 0;
+		nullPT[i].pt_avail = 0;
+		nullPT[i].pt_base = 589824 + i; //??
+	}
+}
+
+void testPrint5Frames() {
+	// Print PD
+	pd_t* nullPD = (pd_t*)frametab[0].loc;
+	kprintf("PD Frame: %d\n", (unsigned long)nullPD/ NBPG);
+	int i;
+	for(i = 0; i < 1024; i++)
+		kprintf("PDE %d: pd_pres = %d, pd_write = %d, pd_base = %d, pde_hex = =x%x\n", i, nullPD[i].pd_pres, nullPD[i].pd_write, nullPD[i].pd_base, nullPD[i]);
+
+	// Print PTs
+	pt_t* nullPT;
+	for(i = 0; i < 5; i++) {
+		nullPT = (pt_t*)frametab[i + 1].loc;
+		kprintf("PT Frame: %d\n", (unsigned long)nullPT / NBPG);
+		int j;
+		for(j = 0; j < 1024; j++)
+			kprintf("PTE %d: pt_pres = %d, pt_write = %d, pt_base = %d, pte_hex = =x%x\n", j, nullPT[j].pt_pres, nullPT[j].pt_write, nullPT[j].pt_base, nullPT[j]);
+	}
+
 }
 
 int32	stop(char *s)

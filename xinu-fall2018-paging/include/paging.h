@@ -52,3 +52,24 @@ typedef struct {
 
 #define MAX_ID		7		/* You get 8 mappings, 0 - 7 */
 #define MIN_ID          0
+
+/** Anirudh Pal Stuff **/
+// Macros
+#define FREE_FRAME	0
+#define	PD_FRAME	1
+#define PT_FRAME	2
+#define PG_FRAME	3
+
+// Track a Frame
+typedef struct {
+	bool8 isUsed;
+	int type;
+	unsigned long loc;
+} frame;
+
+// Track all Frames
+frame frametab[NFRAMES];
+
+/** End of Anirudh Pal Stuff **/
+
+

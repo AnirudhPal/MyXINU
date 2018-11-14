@@ -16,11 +16,11 @@
 #endif
 
 #ifndef	RD_SERVER_PORT
-#define	RD_SERVER_PORT	23126//33124	// My port - pal5, Nov 10
+#define	RD_SERVER_PORT	35071//33124	// My port - pal5, Nov 10
 #endif
 
 #ifndef	RD_LOC_PORT
-#define	RD_LOC_PORT	23126//33124		/* base port number - minor dev	*/
+#define	RD_LOC_PORT	35071//33124		/* base port number - minor dev	*/
 					/*   number is added to insure	*/
 					/*   that each device is unique	*/
 #endif

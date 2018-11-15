@@ -18,9 +18,9 @@ syscall pagingOn() {
 	    "popl %eax;");
 
 	// Mask Value
-	kprintf("Old CR0: 0x%x\n", oldValStage);
+	//kprintf("Old CR0: 0x%x\n", oldValStage);
 	newValStage = oldValStage | 0x80000000;
-	kprintf("New CR0: 0x%x\n", newValStage);
+	//kprintf("New CR0: 0x%x\n", newValStage);
 
 	// Set CR0
 	asm("pushl %eax;"
@@ -37,7 +37,7 @@ syscall pagingOn() {
 
  
 // Set PDBR
-syscall setPDBR(unsigned long add) {
+syscall setPDBR(unsigned long frameNum) {
 	// Disable Interrupts
 	intmask mask;
   	mask = disable();
@@ -48,11 +48,11 @@ syscall setPDBR(unsigned long add) {
 	    "movl %eax, oldValStage;"
 	    "popl %eax;");
 
-	// Mask Value
-	kprintf("Add: 0x%x\n", add);
-	kprintf("Old CR3: 0x%x\n", oldValStage);
-	newValStage = add << 12;
-	kprintf("New CR3: 0x%x\n", newValStage);
+	// Right Shift & Change
+	//kprintf("Frame: %d\n", frameNum);
+	//kprintf("Old CR3: 0x%x\n", oldValStage);
+	newValStage = frameNum << 12;
+	//kprintf("New CR3: 0x%x\n", newValStage);
 
 	// Set CR3
 	asm("pushl %eax;"

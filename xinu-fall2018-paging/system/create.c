@@ -58,6 +58,11 @@ pid32	create(
 	prptr->prdesc[1] = CONSOLE;
 	prptr->prdesc[2] = CONSOLE;
 
+	/* Set Vars for Paging Support - pal5, Nov 14			*/
+	prptr->isVcreated = FALSE;	// Create using create()
+	prptr->prpd = FRAME0;		// Shared PD
+	prptr->prVpages = 0;		// No Pages requested
+
 	/* Initialize stack as if the process was called		*/
 
 	*saddr = STACKMAGIC;

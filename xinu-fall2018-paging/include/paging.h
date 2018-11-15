@@ -59,6 +59,9 @@ typedef struct {
 #define	PD_FRAME	1
 #define PT_FRAME	2
 #define PG_FRAME	3
+#define FRAME_SIZE	1024
+#define DEV_PDE		576
+#define DEV_FRAME	589824
 
 // Track a Frame
 typedef struct {

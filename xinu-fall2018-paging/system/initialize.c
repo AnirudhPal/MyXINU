@@ -14,6 +14,10 @@ extern	void main(void);	/* Main is the first process created	*/
 extern	void xdone(void);	/* System "shutdown" procedure		*/
 static	void sysinit(); 	/* Internal system initialization	*/
 extern	void meminit(void);	/* Initializes the free memory list	*/
+void initialize_paging();	/* Do Paging Stuff - pal5, Nov 14	*/
+void initialize_frames();	/* Create Frame Tab - pal5, Nov 14	*/
+void initialize_pd_null();	/* Create PD for Null - pal5, Nov 14	*/
+void initialize_pt_null();	/* Create PTs for Null - pal5, Nov 14	*/
 
 /* Declarations of major kernel variables */
 
@@ -160,7 +164,12 @@ static	void	sysinit()
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
 	currpid = NULLPROC;
-	
+
+	/* Initialize the Paging Stuff - pal5, Nov 14 */
+	prptr->isVcreated = FALSE;	// Create using create()
+	prptr->prpd = FRAME0;		// Shared PD
+	prptr->prVpages = 0;		// No Pages requested
+
 	/* Initialize semaphores */
 
 	for (i = 0; i < NSEM; i++) {
@@ -208,15 +217,16 @@ void	initialize_paging() {
 	// Step 3: Make 4 Page Tables that map first 4096 Frames	
 	// Step 4: Make 1 Page Table that map 1024 frames from 0x90000000
 	initialize_pt_null();
-	//testPrint5Frames();
  
 	// Step 5: Set PDBR for Null Proc
-	setPDBR(1024);//frametab[0].loc);
+	setPDBR(FRAME0);
 
 	// Step 6: Set Page Fault ISR
 
 	// Step 7: Turn On Paging
 	pagingOn();
+
+	//kprintf("Test PD:")
 
 	// Return Control
 	return;
@@ -256,9 +266,9 @@ void	initialize_pd_null() {
 	frametab[0].isUsed = TRUE;
 	frametab[0].type = PD_FRAME;
 
-	// Set PDE Bits to 0 (Can be Optimized)
+	// Set PDE Bits to 0
 	int i;
-	for(i = 0; i < 1024; i++) {
+	for(i = 0; i < FRAME_SIZE; i++) {
 		nullPD[i].pd_pres = 0;	
 		nullPD[i].pd_write = 0;
 		nullPD[i].pd_user = 0;
@@ -269,36 +279,19 @@ void	initialize_pd_null() {
 		nullPD[i].pd_fmb = 0;
 		nullPD[i].pd_global = 0;
 		nullPD[i].pd_avail = 0;
-		nullPD[i].pd_base = 0;										
+		nullPD[i].pd_base = 0;	
 	}
 
-	// Set 4 PDE (Can be Optimized)
+	// Set 4 PDE
 	for(i = 0; i < 4; i++) {
 		nullPD[i].pd_pres = 1;	
 		nullPD[i].pd_write = 1;
-		nullPD[i].pd_user = 0;
-		nullPD[i].pd_pwt = 0;
-		nullPD[i].pd_pcd = 0;
-		nullPD[i].pd_acc = 0;
-		nullPD[i].pd_mbz = 0;
-		nullPD[i].pd_fmb = 0;
-		nullPD[i].pd_global = 0;
-		nullPD[i].pd_avail = 0;
-		nullPD[i].pd_base = FRAME0 + 1 + i;//frametab[i + 1].loc / NBPG; 								
-	}
+		nullPD[i].pd_base = FRAME0 + 1 + i;						}
 
-	// Set Dev PDE (Can be Optimized)
-	nullPD[576].pd_pres = 1;	
-	nullPD[576].pd_write = 1;
-	nullPD[576].pd_user = 0;
-	nullPD[576].pd_pwt = 0;
-	nullPD[576].pd_pcd = 0;
-	nullPD[576].pd_acc = 0;
-	nullPD[576].pd_mbz = 0;
-	nullPD[576].pd_fmb = 0;
-	nullPD[576].pd_global = 0;
-	nullPD[576].pd_avail = 0;
-	nullPD[576].pd_base = FRAME0 + 5;//frametab[5].loc / NBPG; 
+	// Set Dev PDE
+	nullPD[DEV_PDE].pd_pres = 1;	
+	nullPD[DEV_PDE].pd_write = 1;
+	nullPD[DEV_PDE].pd_base = FRAME0 + 5;
 }
 
 /*------------------------------------------------------------------------
@@ -311,7 +304,7 @@ void	initialize_pt_null() {
 	// Stage Var
 	pt_t* nullPT;
 	
-	// Set 4 PT
+	// Set 4 PT for OG XINU
 	int i;
 	for(i = 0; i < 4; i++) {
 		// Put PT at FRAME1 + i
@@ -319,9 +312,9 @@ void	initialize_pt_null() {
 		frametab[i + 1].isUsed = TRUE;
 		frametab[i + 1].type = PT_FRAME;
 
-		// Set PTE Bits to 0 (Can be Optimized)
+		// Set PTE Bits for OG Xinu
 		int j;
-		for(j = 0; j < 1024; j++) {
+		for(j = 0; j < FRAME_SIZE; j++) {
 			nullPT[j].pt_pres = 1;	
 			nullPT[j].pt_write = 1;
 			nullPT[j].pt_user = 0;
@@ -332,7 +325,7 @@ void	initialize_pt_null() {
 			nullPT[j].pt_mbz = 0;
 			nullPT[j].pt_global = 0;
 			nullPT[j].pt_avail = 0;
-			nullPT[j].pt_base = i * 1024 + j; //??
+			nullPT[j].pt_base = i * FRAME_SIZE + j; 
 		}										
 	}
 
@@ -342,8 +335,8 @@ void	initialize_pt_null() {
 	frametab[5].isUsed = TRUE;
 	frametab[5].type = PT_FRAME;
 
-	// Set PTE Bits to 0 (Can be Optimized)
-	for(i = 0; i < 1024; i++) {
+	// Set PTE Bits for Dev
+	for(i = 0; i < FRAME_SIZE; i++) {
 		nullPT[i].pt_pres = 1;	
 		nullPT[i].pt_write = 1;
 		nullPT[i].pt_user = 0;
@@ -354,7 +347,7 @@ void	initialize_pt_null() {
 		nullPT[i].pt_mbz = 0;
 		nullPT[i].pt_global = 0;
 		nullPT[i].pt_avail = 0;
-		nullPT[i].pt_base = 589824 + i; //??
+		nullPT[i].pt_base = DEV_FRAME + i;
 	}
 }
 

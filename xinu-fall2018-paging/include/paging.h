@@ -62,6 +62,12 @@ typedef struct {
 #define FRAME_SIZE	1024
 #define DEV_PDE		576
 #define DEV_FRAME	589824
+#define	VHEAP_FRAME	4096
+#define NDSFRAMES	FRAME0 + 1000
+#define PF_VCT		14
+
+// Page Fault Error Code
+unsigned long err_code;
 
 // Track a Frame
 typedef struct {

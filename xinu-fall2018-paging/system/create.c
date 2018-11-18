@@ -60,8 +60,10 @@ pid32	create(
 
 	/* Set Vars for Paging Support - pal5, Nov 14			*/
 	prptr->isVcreated = FALSE;	// Create using create()
-	prptr->prpd = FRAME0;		// Shared PD
+	prptr->prpd = getPD();		// Shared PD but copy
 	prptr->prVpages = 0;		// No Pages requested
+	prptr->prVheap.hnext = NULL;	// No Virtual Heap
+	prptr->prVheap.hlength = 0;	// No Size
 
 	/* Initialize stack as if the process was called		*/
 

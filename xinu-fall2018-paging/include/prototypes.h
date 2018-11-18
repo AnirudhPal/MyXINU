@@ -678,11 +678,30 @@ extern	syscall	yield(void);
 
 /* in file pregs.c */
 extern	syscall	pagingOn(void);
-
-/* in file pregs.c */
 extern	syscall	setPDBR(unsigned long);
+extern 	unsigned long getCR2(void);
 
+/* in file create.c */
+extern	pid32	vcreate(void *, uint32, uint16, pri16, char *, uint32, ...);
 
+/* in file paging.c */
+extern	uint16	getPD(void);
+extern	uint16	getPT(void);
+extern	uint16	getDSFrame(void);
+extern	uint16	getPFrame(void);
+
+/* in file pfisr.S */
+extern	void	pfisr(void);
+
+/* in file pfhandler.c */
+extern	interrupt pfhandler(void);
+
+/* in file vgetmem.c */
+extern	char	*vgetmem(uint32);
+
+/* in file testProcV.c */
+extern void testProcV(int, int, char);
+ 
 /** End of Anirudh Pal Added Stuff **/
 
 

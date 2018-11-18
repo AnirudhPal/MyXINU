@@ -40,6 +40,12 @@
 
 /* Definition of the process table (multiple of 32 bits) */
 
+// Struct for Heap, modeled after memblk - pal5, Nov 14
+struct heapblk {
+	struct heapblk* hnext;
+	uint32 hlength;
+};
+
 struct procent {		/* Entry in the process table		*/
 	uint16	prstate;	/* Process state: PR_CURR, etc.		*/
 	pri16	prprio;		/* Process priority			*/
@@ -55,6 +61,7 @@ struct procent {		/* Entry in the process table		*/
 	bool8	isVcreated;	/* Vcreate Procs - pal5, Nov 14		*/
 	uint32	prpd;		/* Paging Directory - pal5, Nov 14	*/
 	uint16	prVpages;	/* Pages Requested - pal5, Nov 14	*/
+	struct heapblk	prVheap;	/* Stores V Heap Head - pal5, Nov 14	*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

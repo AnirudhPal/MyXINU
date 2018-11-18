@@ -66,3 +66,23 @@ syscall setPDBR(unsigned long frameNum) {
 	// Return
 	return OK;
 }
+
+
+// Get CR2
+unsigned long getCR2() {
+	// Disable Interrupts
+	intmask mask;
+  	mask = disable();
+
+	// Get CR3 
+	asm("pushl %eax;"
+	    "movl %cr2, %eax;"
+	    "movl %eax, oldValStage;"
+	    "popl %eax;");
+	
+	// Enable Interrupts
+	restore(mask);
+
+	// Return
+	return oldValStage;
+}

@@ -24,8 +24,8 @@ void initialize_pt_null();	/* Create PTs for Null - pal5, Nov 14	*/
 struct	procent	proctab[NPROC];	/* Process table			*/
 struct	sentry	semtab[NSEM];	/* Semaphore table			*/
 struct	memblk	memlist;	/* List of free memory blocks		*/
-frame frametab[NFRAMES];	/* Frames table = pal5, Oct 13		*/
-
+frame frametab[NFRAMES];	/* Frames table - pal5, Nov 17		*/
+unsigned long err_code;  	/* Page Fault Error Code - pal5, Nov 17 */
 
 /* Active system status */
 
@@ -222,6 +222,8 @@ void	initialize_paging() {
 	setPDBR(FRAME0);
 
 	// Step 6: Set Page Fault ISR
+	err_code = 0;	// Page Fault Error Code Staging Var
+	set_evec(PF_VCT, (uint32)pfisr);
 
 	// Step 7: Turn On Paging
 	pagingOn();
@@ -308,7 +310,7 @@ void	initialize_pt_null() {
 	int i;
 	for(i = 0; i < 4; i++) {
 		// Put PT at FRAME1 + i
-		nullPT = (pd_t*)frametab[i + 1].loc;
+		nullPT = (pt_t*)frametab[i + 1].loc;
 		frametab[i + 1].isUsed = TRUE;
 		frametab[i + 1].type = PT_FRAME;
 
@@ -331,7 +333,7 @@ void	initialize_pt_null() {
 
 	// Set Dev PT
 	// Put PT at FRAME5
-	nullPT = (pd_t*)frametab[5].loc;
+	nullPT = (pt_t*)frametab[5].loc;
 	frametab[5].isUsed = TRUE;
 	frametab[5].type = PT_FRAME;
 

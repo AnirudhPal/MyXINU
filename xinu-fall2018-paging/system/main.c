@@ -15,7 +15,9 @@ process	main(void)
 	//psinit();
 
 	// Testing
-	resume(vcreate(testProcV, 1024, 1, 50, "testProcV0", 3, 16*10, 16, 'A'));
+	resume(vcreate(test2072P, 1024, 2072, 50, "test2072P0", 0));
+	sleep(5);
+	resume(vcreate(test2072P, 1024, 2072, 50, "test2072P1", 0));
 
 	kprintf("\n...creating a shell\n");
 	recvclr();

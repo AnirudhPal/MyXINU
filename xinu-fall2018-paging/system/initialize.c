@@ -26,6 +26,7 @@ struct	sentry	semtab[NSEM];	/* Semaphore table			*/
 struct	memblk	memlist;	/* List of free memory blocks		*/
 frame frametab[NFRAMES];	/* Frames table - pal5, Nov 17		*/
 unsigned long err_code;  	/* Page Fault Error Code - pal5, Nov 17 */
+unsigned long pf_count;		/* Page Fault Count - pal5, Nov 18	*/
 
 /* Active system status */
 
@@ -165,13 +166,7 @@ static	void	sysinit()
 	prptr->prstkptr = 0;
 	currpid = NULLPROC;
 
-	/* Initialize the Paging Stuff - pal5, Nov 14 */
-	prptr->isVcreated = FALSE;	// Create using create()
-	prptr->prpd = FRAME0;		// Shared PD
-	prptr->prVpages = 0;		// No Pages requested
-
 	/* Initialize semaphores */
-
 	for (i = 0; i < NSEM; i++) {
 		semptr = &semtab[i];
 		semptr->sstate = S_FREE;
@@ -219,19 +214,15 @@ void	initialize_paging() {
 	initialize_pt_null();
  
 	// Step 5: Set PDBR for Null Proc
-	setPDBR(FRAME0);
+	setPDBR(proctab[currpid].prpd);
 
 	// Step 6: Set Page Fault ISR
-	err_code = 0;	// Page Fault Error Code Staging Var
+	err_code = 0;
+	pf_count = 0;
 	set_evec(PF_VCT, (uint32)pfisr);
 
 	// Step 7: Turn On Paging
 	pagingOn();
-
-	//kprintf("Test PD:")
-
-	// Return Control
-	return;
 }
 
 /*------------------------------------------------------------------------
@@ -244,13 +235,13 @@ void	initialize_frames() {
 	// Create Frames
 	int i;
 	for(i = 0; i < NFRAMES; i++) {
-		// Set Unused
-		frametab[i].isUsed = FALSE;
-
 		// Set Type
 		frametab[i].type = FREE_FRAME;
+
+		// Set PID
+		frametab[i].pid = -1;
 		
-		// Set Location (Pyhsical/Virtual)
+		// Set Location
 		frametab[i].loc = (i + FRAME0) * NBPG;
 	}
 }
@@ -263,37 +254,10 @@ void	initialize_frames() {
  *------------------------------------------------------------------------
  */
 void	initialize_pd_null() {
-	// Put PD at FRAME0
-	pd_t* nullPD = (pd_t*)frametab[0].loc;
-	frametab[0].isUsed = TRUE;
-	frametab[0].type = PD_FRAME;
-
-	// Set PDE Bits to 0
-	int i;
-	for(i = 0; i < FRAME_SIZE; i++) {
-		nullPD[i].pd_pres = 0;	
-		nullPD[i].pd_write = 0;
-		nullPD[i].pd_user = 0;
-		nullPD[i].pd_pwt = 0;
-		nullPD[i].pd_pcd = 0;
-		nullPD[i].pd_acc = 0;
-		nullPD[i].pd_mbz = 0;
-		nullPD[i].pd_fmb = 0;
-		nullPD[i].pd_global = 0;
-		nullPD[i].pd_avail = 0;
-		nullPD[i].pd_base = 0;	
-	}
-
-	// Set 4 PDE
-	for(i = 0; i < 4; i++) {
-		nullPD[i].pd_pres = 1;	
-		nullPD[i].pd_write = 1;
-		nullPD[i].pd_base = FRAME0 + 1 + i;						}
-
-	// Set Dev PDE
-	nullPD[DEV_PDE].pd_pres = 1;	
-	nullPD[DEV_PDE].pd_write = 1;
-	nullPD[DEV_PDE].pd_base = FRAME0 + 5;
+	/* Initialize the Paging Stuff - pal5, Nov 14 */
+	proctab[currpid].isVcreated = FALSE;	// Create using create()
+	proctab[currpid].prpd = getPD();	// Shared PD
+	proctab[currpid].prVpages = 0;		// No Pages requested
 }
 
 /*------------------------------------------------------------------------
@@ -311,8 +275,8 @@ void	initialize_pt_null() {
 	for(i = 0; i < 4; i++) {
 		// Put PT at FRAME1 + i
 		nullPT = (pt_t*)frametab[i + 1].loc;
-		frametab[i + 1].isUsed = TRUE;
 		frametab[i + 1].type = PT_FRAME;
+		frametab[i + 1].pid = currpid;
 
 		// Set PTE Bits for OG Xinu
 		int j;
@@ -334,8 +298,8 @@ void	initialize_pt_null() {
 	// Set Dev PT
 	// Put PT at FRAME5
 	nullPT = (pt_t*)frametab[5].loc;
-	frametab[5].isUsed = TRUE;
 	frametab[5].type = PT_FRAME;
+	frametab[5].pid = currpid;
 
 	// Set PTE Bits for Dev
 	for(i = 0; i < FRAME_SIZE; i++) {
@@ -351,26 +315,6 @@ void	initialize_pt_null() {
 		nullPT[i].pt_avail = 0;
 		nullPT[i].pt_base = DEV_FRAME + i;
 	}
-}
-
-void testPrint5Frames() {
-	// Print PD
-	pd_t* nullPD = (pd_t*)frametab[0].loc;
-	kprintf("PD Frame: %d\n", (unsigned long)nullPD/ NBPG);
-	int i;
-	for(i = 0; i < 1024; i++)
-		kprintf("PDE %d: pd_pres = %d, pd_write = %d, pd_base = %d, pde_hex = =x%x\n", i, nullPD[i].pd_pres, nullPD[i].pd_write, nullPD[i].pd_base, nullPD[i]);
-
-	// Print PTs
-	pt_t* nullPT;
-	for(i = 0; i < 5; i++) {
-		nullPT = (pt_t*)frametab[i + 1].loc;
-		kprintf("PT Frame: %d\n", (unsigned long)nullPT / NBPG);
-		int j;
-		for(j = 0; j < 1024; j++)
-			kprintf("PTE %d: pt_pres = %d, pt_write = %d, pt_base = %d, pte_hex = =x%x\n", j, nullPT[j].pt_pres, nullPT[j].pt_write, nullPT[j].pt_base, nullPT[j]);
-	}
-
 }
 
 int32	stop(char *s)

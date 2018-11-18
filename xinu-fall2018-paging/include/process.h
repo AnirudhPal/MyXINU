@@ -62,6 +62,7 @@ struct procent {		/* Entry in the process table		*/
 	uint32	prpd;		/* Paging Directory - pal5, Nov 14	*/
 	uint16	prVpages;	/* Pages Requested - pal5, Nov 14	*/
 	struct heapblk	prVheap;	/* Stores V Heap Head - pal5, Nov 14	*/
+	bool8	hasHeap;	/* Heap Initialized - pal5, Nov 18 */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

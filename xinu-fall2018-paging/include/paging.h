@@ -63,16 +63,20 @@ typedef struct {
 #define DEV_PDE		576
 #define DEV_FRAME	589824
 #define	VHEAP_FRAME	4096
-#define NDSFRAMES	FRAME0 + 1000
+#define NDSFRAMES	1000
 #define PF_VCT		14
+#define VERBOSE		1
 
 // Page Fault Error Code
 unsigned long err_code;
 
+// Page Fault Count
+unsigned long pf_count;
+
 // Track a Frame
 typedef struct {
-	bool8 isUsed;
 	int type;
+	int pid;
 	unsigned long loc;
 } frame;
 

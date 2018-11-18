@@ -64,6 +64,7 @@ pid32	create(
 	prptr->prVpages = 0;		// No Pages requested
 	prptr->prVheap.hnext = NULL;	// No Virtual Heap
 	prptr->prVheap.hlength = 0;	// No Size
+	prptr->hasHeap = FALSE;		// 1st Node not Initialized
 
 	/* Initialize stack as if the process was called		*/
 

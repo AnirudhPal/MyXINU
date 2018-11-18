@@ -9,10 +9,22 @@ uint16 getPD() {
 	// Get Frame (Return FRAME0 + i)
 	uint16 frame = getDSFrame();
 
+	// Error Handeling
+	if(frame == SYSERR) {
+		// Enable Interrupts
+		restore(mask);
+
+		// Error
+		kprintf("getPD(): Invalid PD %d\n", frame);
+
+		// Return
+		return SYSERR;	
+	}
+
 	// Put PD at Frame
 	pd_t* nullPD = (pd_t*)frametab[frame - FRAME0].loc;
-	frametab[frame - FRAME0].isUsed = TRUE;
 	frametab[frame - FRAME0].type = PD_FRAME;
+	frametab[frame - FRAME0].pid = currpid;
 
 	// Set PDE Bits to 0
 	int i;
@@ -41,6 +53,9 @@ uint16 getPD() {
 	nullPD[DEV_PDE].pd_write = 1;
 	nullPD[DEV_PDE].pd_base = FRAME0 + 5;
 
+	// Test Print
+	if(VERBOSE)
+		kprintf("\ngetPD(): Frame -> %d\n", frame);
 
 	// Return PD Frame
 	restore(mask);
@@ -54,11 +69,24 @@ uint16 getPT() {
 
 	// Get Frame (Return FRAME0 + i)
 	uint16 frame = getDSFrame();
+
+	// Error Handeling
+	if(frame == SYSERR) {
+		// Enable Interrupts
+		restore(mask);
+
+		// Kill Proc
+		kprintf("getPT(): Invalid PT %d for PID %d\nKilling Proc!! \n", frame, currpid);
+		kill(currpid);
+
+		// Return
+		return SYSERR;	
+	}
 	
 	// Put PT at FRAME
 	pt_t* nullPT = (pt_t*)frametab[frame - FRAME0].loc;
-	frametab[frame - FRAME0].isUsed = TRUE;
 	frametab[frame - FRAME0].type = PT_FRAME;
+	frametab[frame - FRAME0].pid = currpid;
 
 	// Set PTE Bits to 0
 	int i;
@@ -88,13 +116,13 @@ uint16 getDSFrame() {
 
 	// Get Frame from First 1000
 	int i;
-	for(i = 0; i < NDSFRAMES; i++)
+	for(i = 0; i < NDSFRAMES; i++) {
 		if(frametab[i].type == FREE_FRAME) {
 			// Restore Interrupts and Return
-			kprintf("getDSFrame(): Frame: %d\n", i);
 			restore(mask);
 			return i + FRAME0;
 		}
+	}
 
 	// Return ERROR
 	restore(mask);
@@ -106,21 +134,76 @@ uint16 getPFrame() {
 	// Disable Interrupts
 	intmask mask = disable();
 
+	// Error Handeling
+	if(proctab[currpid].prVpages <= 0) {
+		// Restore
+		restore(mask);
+
+		// Kill Proc
+		kprintf("getPFrame(): No Pages for PID %d\nKilling Proc!! \n", currpid);
+		kill(currpid);
+
+		// Return
+		return SYSERR;
+	}
+
 	// Get Frame from First 1000
 	int i;
 	for(i = NDSFRAMES; i < NFRAMES; i++)
 		if(frametab[i].type == FREE_FRAME) {
+			// Reduce Page Counts
+			proctab[currpid].prVpages--;
+
 			// Set Table
-			frametab[i].isUsed = TRUE;
 			frametab[i].type = PG_FRAME;
+			frametab[i].pid = currpid;
+
+			// Test Print
+			if(VERBOSE)
+				kprintf("\ngetPFrame(): Frame -> %d for PID %d\n", i + FRAME0, currpid);
 
 			// Restore Interrupts and Return
-			kprintf("getPFrame(): Frame: %d\n", i);
 			restore(mask);
 			return i + FRAME0;
 		}
 
-	// Return ERROR
+	// Restore
 	restore(mask);
+
+	// Kill Proc
+	kprintf("getPFrame(): No Frames for PID %d\nKilling Proc!! \n", currpid);
+	kill(currpid);
+	
+	// Return
 	return SYSERR;
+}
+
+syscall freeFrames() {
+	// Disable Interrupts
+	intmask mask = disable();
+	
+	// Loop
+	int i;
+	for(i = 0; i < NFRAMES; i++) {
+		if(frametab[i].pid == currpid) {
+			frametab[i].pid = -1;
+			frametab[i].type = FREE_FRAME;
+		}
+	}
+	
+	// Restore
+	restore(mask);
+	
+	// Return
+	return SYSERR;
+}
+
+// Print FrameTAB
+void printFrames() {
+	int i;
+	for(i = 0; i < NFRAMES; i++) {
+		if(frametab[i].type != FREE_FRAME) {
+			kprintf("FRAME%d Type:%d PID:%d\n", i+FRAME0, frametab[i].type, frametab[i].pid);
+		}
+	}
 }

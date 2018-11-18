@@ -18,15 +18,17 @@ syscall pagingOn() {
 	    "popl %eax;");
 
 	// Mask Value
-	//kprintf("Old CR0: 0x%x\n", oldValStage);
 	newValStage = oldValStage | 0x80000000;
-	//kprintf("New CR0: 0x%x\n", newValStage);
 
 	// Set CR0
 	asm("pushl %eax;"
 	    "movl newValStage, %eax;"
 	    "movl %eax, %cr0;"
 	    "popl %eax;");
+
+	// Test Print
+	if(VERBOSE)
+		kprintf("\npagingOn(): CR0 -> %u for PID %d\n", newValStage >> 31, currpid);
 
 	// Enable Interrupts
 	restore(mask);
@@ -42,23 +44,31 @@ syscall setPDBR(unsigned long frameNum) {
 	intmask mask;
   	mask = disable();
 
-	// Get CR3 
-	asm("pushl %eax;"
-	    "movl %cr3, %eax;"
-	    "movl %eax, oldValStage;"
-	    "popl %eax;");
+	// Error Handeling
+	if(frameNum < FRAME0 || frameNum > (FRAME0 + NFRAMES)) {
+		// Enable Interrupts
+		restore(mask);
 
-	// Right Shift & Change
-	//kprintf("Frame: %d\n", frameNum);
-	//kprintf("Old CR3: 0x%x\n", oldValStage);
+		// Kill Proc
+		kprintf("setPDBR(): Invalid PD %d for PID %d\nKilling Proc!! \n", frameNum, currpid);
+		kill(currpid);
+
+		// Return
+		return SYSERR;
+	}
+
+	// Right Shift
 	newValStage = frameNum << 12;
-	//kprintf("New CR3: 0x%x\n", newValStage);
 
 	// Set CR3
 	asm("pushl %eax;"
 	    "movl newValStage, %eax;"
 	    "movl %eax, %cr3;"
 	    "popl %eax;");
+
+	// Test Print
+	if(VERBOSE)
+		kprintf("setPDBR(): CR3 -> %d for PID %d\n", newValStage >> 12, currpid);
 
 	// Enable Interrupts
 	restore(mask);
@@ -74,12 +84,16 @@ unsigned long getCR2() {
 	intmask mask;
   	mask = disable();
 
-	// Get CR3 
+	// Get CR2 
 	asm("pushl %eax;"
 	    "movl %cr2, %eax;"
 	    "movl %eax, oldValStage;"
 	    "popl %eax;");
-	
+
+	// Test Print
+	if(VERBOSE)
+		kprintf("getCR2(): CR2 -> %d for PID %d\n", oldValStage >> 12, currpid);
+
 	// Enable Interrupts
 	restore(mask);
 

@@ -689,6 +689,8 @@ extern	uint16	getPD(void);
 extern	uint16	getPT(void);
 extern	uint16	getDSFrame(void);
 extern	uint16	getPFrame(void);
+extern	syscall	freeFrames(void);
+extern	void	printFrames(void);
 
 /* in file pfisr.S */
 extern	void	pfisr(void);
@@ -699,9 +701,13 @@ extern	interrupt pfhandler(void);
 /* in file vgetmem.c */
 extern	char	*vgetmem(uint32);
 
-/* in file testProcV.c */
-extern void testProcV(int, int, char);
- 
+/* in file vfreemem.c */
+extern	syscall	vfreemem(char *, uint32);
+
+/* in file testProcs.c */
+extern void test1P(void);
+extern void test2072P(void);
+
 /** End of Anirudh Pal Added Stuff **/
 
 

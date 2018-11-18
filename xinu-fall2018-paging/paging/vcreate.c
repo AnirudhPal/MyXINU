@@ -63,7 +63,8 @@ pid32	vcreate(
 	prptr->prpd = getPD();			// Non-Shared PD (Assuming that there is Space)
 	prptr->prVpages = hsize_in_pages;	// Pages requested
 	prptr->prVheap.hnext = (struct heapblk*)(VHEAP_FRAME * NBPG);	// Stores Virtual Loc of Heap
-	prptr->prVheap.hlength = hsize_in_pages * NBPG;	// Stores Size in Bytes 
+	prptr->prVheap.hlength = hsize_in_pages * NBPG;	// Stores Size in Bytes
+	prptr->hasHeap = FALSE;			// 1st Node not Initialized 
 
 	/* Initialize stack as if the process was called		*/
 

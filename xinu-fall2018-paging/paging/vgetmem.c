@@ -22,6 +22,13 @@ char* vgetmem(uint32 nbytes) {
 	prev = &(proctab[currpid].prVheap);
 	curr = proctab[currpid].prVheap.hnext;
 
+	// Intialize first Node
+	if(!proctab[currpid].hasHeap) {
+		proctab[currpid].hasHeap = TRUE;
+		curr->hnext = NULL;
+		curr->hlength = prev->hlength;	
+	}
+
 	// Parse Heap
 	while (curr != NULL) {
 		// Exact Match

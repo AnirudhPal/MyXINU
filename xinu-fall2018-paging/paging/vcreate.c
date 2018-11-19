@@ -61,11 +61,12 @@ pid32	vcreate(
 	/* Set Vars for Paging Support - pal5, Nov 14			*/
 	prptr->isVcreated = TRUE;		// Create using create()
 	prptr->prpd = getPD();			// Non-Shared PD (Assuming that there is Space)
-	prptr->prVpages = hsize_in_pages;	// Pages requested
+	prptr->prVpages = hsize_in_pages;	// Pages remaining
 	prptr->prVheap.hnext = (struct heapblk*)(VHEAP_FRAME * NBPG);	// Stores Virtual Loc of Heap
 	prptr->prVheap.hlength = hsize_in_pages * NBPG;	// Stores Size in Bytes
 	prptr->hasHeap = FALSE;			// 1st Node not Initialized 
-
+	prptr->prVRpages = hsize_in_pages;	// No Pages requested	
+	
 	/* Initialize stack as if the process was called		*/
 
 	*saddr = STACKMAGIC;

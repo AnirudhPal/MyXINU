@@ -60,9 +60,10 @@ struct procent {		/* Entry in the process table		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
 	bool8	isVcreated;	/* Vcreate Procs - pal5, Nov 14		*/
 	uint32	prpd;		/* Paging Directory - pal5, Nov 14	*/
-	uint16	prVpages;	/* Pages Requested - pal5, Nov 14	*/
+	uint16	prVpages;	/* Pages Remaining - pal5, Nov 14	*/
 	struct heapblk	prVheap;	/* Stores V Heap Head - pal5, Nov 14	*/
-	bool8	hasHeap;	/* Heap Initialized - pal5, Nov 18 */
+	bool8	hasHeap;	/* Heap Initialized - pal5, Nov 18 	*/
+	uint16	prVRpages;	/* Pages Requested - pal5, Nov 18 	*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

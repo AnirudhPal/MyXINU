@@ -15,9 +15,52 @@ process	main(void)
 	//psinit();
 
 	// Testing
-	resume(vcreate(test2072P, 1024, 2072, 50, "test2072P0", 0));
+	intmask mask = disable();
+	kprintf("\nTesting 1 Page Usage\n");
+	restore(mask);
+	resume(vcreate(test1P, 1024, 1, 50, "test1P", 0));
+	
+	mask = disable();
+	kprintf("\nTesting 2072 Page Usage\n");	
+	restore(mask);
+	resume(vcreate(test2072P, 1024, 2072, 50, "test2072P", 0));
+
+	/*
+	mask = disable();
+	kprintf("\nTesting Same Virtual Address\n");	
+	restore(mask);
+	int AP = vcreate(test1A, 1024, 1, INITPRIO, "test1A", 0);
+	int BP = vcreate(test1B, 1024, 1, INITPRIO, "test1B", 0);
+	resume(AP);
+	resume(BP);
+	sleep(3);
+	kill(AP);
+	kill(BP);	
+	
+	mask = disable();
+	kprintf("\nTesting vgetmem() and vfreemem()\n");
+	restore(mask);
+	resume(vcreate(test2072PGF, 1024, 2072, 50, "test2072PGF", 0));
+
+	mask = disable();
+	kprintf("\nTesting Exceeding Frames\n");	
+	restore(mask);
+	resume(vcreate(test2072P, 1024, 2072, INITPRIO, "test2072P0", 0));
+	resume(vcreate(test2072P, 1024, 2072, INITPRIO, "test2072P1", 0));
 	sleep(5);
-	resume(vcreate(test2072P, 1024, 2072, 50, "test2072P1", 0));
+
+	mask = disable();
+	kprintf("\nTesting Freeing Frames\n");	
+	restore(mask);
+	resume(vcreate(test2072P, 1024, 2072, 50, "test2072P2", 0));
+	resume(vcreate(test2072P, 1024, 2072, 50, "test2072P3", 0));
+
+	mask = disable();
+	kprintf("\nTesting Exceeding Pages\n");
+	restore(mask);
+	resume(vcreate(test2P, 1024, 1, 50, "test2P", 0));
+	**/	
+
 
 	kprintf("\n...creating a shell\n");
 	recvclr();

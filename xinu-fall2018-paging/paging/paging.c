@@ -30,7 +30,7 @@ uint16 getPD() {
 	int i;
 	for(i = 0; i < FRAME_SIZE; i++) {
 		nullPD[i].pd_pres = 0;	
-		nullPD[i].pd_write = 0;
+		nullPD[i].pd_write = 1;
 		nullPD[i].pd_user = 0;
 		nullPD[i].pd_pwt = 0;
 		nullPD[i].pd_pcd = 0;
@@ -92,7 +92,7 @@ uint16 getPT() {
 	int i;
 	for(i = 0; i < FRAME_SIZE; i++) {
 		nullPT[i].pt_pres = 0;	
-		nullPT[i].pt_write = 0;
+		nullPT[i].pt_write = 1;
 		nullPT[i].pt_user = 0;
 		nullPT[i].pt_pwt = 0;
 		nullPT[i].pt_pcd = 0;
@@ -178,14 +178,23 @@ uint16 getPFrame() {
 	return SYSERR;
 }
 
-syscall freeFrames() {
+syscall freeFrames(int pid) {
 	// Disable Interrupts
 	intmask mask = disable();
 	
-	// Loop
+	// Loop (Reverse)
 	int i;
 	for(i = 0; i < NFRAMES; i++) {
-		if(frametab[i].pid == currpid) {
+		if(frametab[i].pid == pid) {
+			// If PT
+			if(frametab[i].type == PT_FRAME) {
+				// Hook
+				#ifdef TALK
+				hook_ptable_delete((unsigned int)frametab[i].loc);
+				#endif
+			}
+
+			// Delete Frame
 			frametab[i].pid = -1;
 			frametab[i].type = FREE_FRAME;
 		}
@@ -207,3 +216,15 @@ void printFrames() {
 		}
 	}
 }
+
+/**
+// Print PT
+void printPT() {
+
+}
+
+// Print PD
+void printPD() {
+
+}
+**/

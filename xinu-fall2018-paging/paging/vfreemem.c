@@ -11,8 +11,8 @@ syscall vfreemem(char *blkaddr, uint32 nbytes) {
 	mask = disable();
 
 	// Error
-	if (!proctab[currpid].isVcreated || (nbytes == 0) || ((uint32) blkaddr < (uint32) minheap)
-			  || ((uint32) blkaddr > (uint32) maxheap)) {
+	if (!proctab[currpid].isVcreated || (nbytes == 0) || ((uint32) blkaddr < (uint32) (VHEAP_FRAME * NBPG))
+			  || ((uint32) blkaddr > (uint32) (VHEAP_FRAME + proctab[currpid].prVRpages) * NBPG)) {
 		restore(mask);
 		return SYSERR;
 	}

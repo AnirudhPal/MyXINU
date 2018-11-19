@@ -66,6 +66,7 @@ typedef struct {
 #define NDSFRAMES	1000
 #define PF_VCT		14
 #define VERBOSE		1
+//#define TALK		0
 
 // Page Fault Error Code
 unsigned long err_code;

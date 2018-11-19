@@ -7,16 +7,24 @@ void pfhandler() {
 	unsigned long fadd = getCR2();
 
 	// Hook
-	//hook_pfault(fadd);
+	#ifdef TALK
+	//hook_pfault((char*)fadd);
+	#endif
 
 	// Increment Count
 	pf_count++;
 
 	// Step 0: Error Code Handeling ()
-	/**
-	if((err_code & 0x2) == 0x2) {
+	if((err_code & 0x1) != 0) {
+		kprintf("pfhandler(): Unexpected Error Code, Err: 0x%x\n", err_code);
 		return;
-	}**/
+	}
+
+	// Error Handeling
+	if(fadd < VHEAP_FRAME * NBPG || fadd > ((VHEAP_FRAME + proctab[currpid].prVRpages) * NBPG)) {
+		kprintf("pfhandler(): Address out of Range, Add: 0x%x\n", fadd);
+		return;
+	}
 
 	// Step 2: Compute PD
 	pd_t* procPD = (pd_t*)frametab[proctab[currpid].prpd - FRAME0].loc;
@@ -29,7 +37,9 @@ void pfhandler() {
 		procPD[PDEInd].pd_base = getPT();
 
 		// Hook
-		//hook_ptable_create(PDEInd);
+		#ifdef TALK
+		//hook_ptable_create((unsigned int)(frametab[procPD[PDEInd].pd_base - FRAME0].loc));
+		#endif
 	}
 
 	// Step 4: Compute PT

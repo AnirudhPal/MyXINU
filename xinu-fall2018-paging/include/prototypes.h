@@ -689,7 +689,7 @@ extern	uint16	getPD(void);
 extern	uint16	getPT(void);
 extern	uint16	getDSFrame(void);
 extern	uint16	getPFrame(void);
-extern	syscall	freeFrames(void);
+extern	syscall	freeFrames(int);
 extern	void	printFrames(void);
 
 /* in file pfisr.S */
@@ -707,6 +707,17 @@ extern	syscall	vfreemem(char *, uint32);
 /* in file testProcs.c */
 extern void test1P(void);
 extern void test2072P(void);
+extern void test2072PGF(void);
+extern void test2P(void);
+extern void test1A(void);
+extern void test1B(void);
+
+/* in file hooks.c */
+extern void hook_ptable_create(unsigned int);
+extern void hook_ptable_delete(unsigned int);
+extern void hook_pfault(char*);
+extern void hook_pswap_out(unsigned int, int);
+extern int get_faults(void);
 
 /** End of Anirudh Pal Added Stuff **/
 

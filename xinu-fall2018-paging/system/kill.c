@@ -32,7 +32,7 @@ syscall	kill(
 	freestk(prptr->prstkbase, prptr->prstklen);
 
 	// Free Frames - pal5, Nov 18
-	freeFrames();
+	freeFrames(pid);
 
 	switch (prptr->prstate) {
 	case PR_CURR:
